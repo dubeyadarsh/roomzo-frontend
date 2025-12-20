@@ -1,0 +1,14 @@
+.hero { background:linear-gradient(180deg,#f8fafc 0%, #fff 60%); padding:48px 0; }
+.hero-inner { display:flex; align-items:center; gap:32px; max-width:1200px; margin:0 auto; padding:0 20px; }
+.hero-content { flex:1; }
+.subtitle { color:#475569; margin-bottom:16px; }
+.hero-visual { width:420px; max-width:45%; display:flex; justify-content:center; }
+.lottie-placeholder { width:320px; height:220px; background:#fff; border-radius:12px; box-shadow:0 8px 30px rgba(2,6,23,.08); display:flex; align-items:center; justify-content:center; color:#94a3b8; }
+@media (max-width:900px) {
+  .hero-inner { flex-direction:column; text-align:center; }
+  .hero-visual { max-width:100%; width:100%; }
+}
+
+.startSearch{
+    background-color: #1e3a8a !important;
+}

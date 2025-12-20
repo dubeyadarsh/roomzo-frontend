@@ -1,0 +1,138 @@
+<div class="page-wrapper">
+  
+
+ 
+
+  <section class="search-hero">
+    <div class="hero-container">
+      <h1>Find your perfect home</h1>
+      
+      <div class="search-bar">
+        <div class="search-input">
+          <mat-icon>search</mat-icon>
+          <input type="text" [(ngModel)]="filters.searchQuery" (keyup.enter)="applyFilters()" placeholder="City, neighborhood, or address">
+        </div>
+        <button class="btn-primary search-btn" (click)="applyFilters()">Search</button>
+      </div>
+    </div>
+  </section>
+
+  <main class="main-content">
+    <div class="container layout-grid">
+      
+      <aside class="filters-sidebar">
+        <div class="filters-header">
+          <h3>Filters</h3>
+          <button class="reset-btn" (click)="resetFilters()">Reset all</button>
+        </div>
+
+        <div class="filter-group">
+          <label>Max Price: {{ filters.maxPrice | currency }}</label>
+          <input type="range" class="range-slider" min="500" max="10000" step="100" [(ngModel)]="filters.maxPrice" (change)="applyFilters()">
+        </div>
+
+        <div class="filter-group">
+          <label>Property Type</label>
+          <div class="checkbox-list">
+            <label class="custom-checkbox">
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="" (change)="applyFilters()">
+              <span class="checkmark"></span> Any
+            </label>
+            <label class="custom-checkbox">
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="Apartment" (change)="applyFilters()">
+              <span class="checkmark"></span> Apartment
+            </label>
+            <label class="custom-checkbox">
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="House" (change)="applyFilters()">
+              <span class="checkmark"></span> House
+            </label>
+            <label class="custom-checkbox">
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="Studio" (change)="applyFilters()">
+              <span class="checkmark"></span> Studio
+            </label>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label>Bedrooms</label>
+          <div class="pill-group">
+            <button class="pill" [class.active]="filters.bedrooms === 'Any'" (click)="filters.bedrooms = 'Any'; applyFilters()">Any</button>
+            <button class="pill" [class.active]="filters.bedrooms === '1+'" (click)="filters.bedrooms = '1+'; applyFilters()">1+</button>
+            <button class="pill" [class.active]="filters.bedrooms === '2+'" (click)="filters.bedrooms = '2+'; applyFilters()">2+</button>
+            <button class="pill" [class.active]="filters.bedrooms === '3+'" (click)="filters.bedrooms = '3+'; applyFilters()">3+</button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="listings-area">
+        
+        <div class="results-header">
+          <span>Showing <strong>{{ totalItems }}</strong> properties</span>
+        </div>
+
+        <div *ngIf="isLoading" style="padding: 40px; text-align: center; color: #666;">
+           Loading properties...
+        </div>
+
+        <div *ngIf="!isLoading && listings.length === 0" style="padding: 40px; text-align: center;">
+           <h3>No properties found</h3>
+           <p>Try adjusting your filters.</p>
+        </div>
+
+        <div class="property-grid" *ngIf="!isLoading && listings.length > 0">
+          
+          <div class="property-card" *ngFor="let prop of listings">
+            <div class="card-image">
+              <img [src]="prop.final.images[0] || 'assets/placeholder.jpg'" alt="Home">
+              
+              <div class="badges-container" *ngIf="prop.final.status">
+                <span class="badge featured">{{ prop.final.status }}</span>
+              </div>
+            </div>
+
+            <div class="card-details">
+              <div class="price-row">
+                <div class="price">
+                  {{ formatPrice(prop.final.rentAmount) }}<span class="unit">/mo</span>
+                </div>
+              </div>
+
+              <h3 class="prop-title">{{ prop.final.title }}</h3>
+              <p class="prop-address">
+                <mat-icon>location_on</mat-icon> 
+                {{ prop.details.address.street }}, {{ prop.details.address.city }}
+              </p>
+
+              <div class="prop-specs">
+                <span><mat-icon>bed</mat-icon> {{ prop.details.bedrooms }} Beds</span>
+                <span><mat-icon>bathtub</mat-icon> {{ prop.details.bathrooms }} Baths</span>
+                <span><mat-icon>square_foot</mat-icon> {{ prop.details.propertySize }} sqft</span>
+              </div>
+
+            <button class="btn-outline full-width" (click)="viewDetails(prop.id)">
+            View Details
+            </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="pagination" *ngIf="totalPages > 1">
+          <button class="page-btn" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          
+          <button class="page-btn" *ngFor="let p of pagesArray" 
+                  [class.active]="p === currentPage" 
+                  (click)="changePage(p)">
+            {{ p }}
+          </button>
+          
+          <button class="page-btn" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+
+      </section>
+    </div>
+  </main>
+</div>

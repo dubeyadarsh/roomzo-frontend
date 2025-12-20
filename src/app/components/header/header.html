@@ -1,0 +1,28 @@
+<header class="rz-header">
+  <div class="container">
+    <div class="brand">
+      <a routerLink="/" class="logo">RoomZo</a>
+    </div>
+
+    <nav class="nav-desktop">
+      <a routerLink="/search-listing">Rent</a>
+      <a routerLink="/list">List Property</a>
+      <a routerLink="/about">About</a>
+      <a routerLink="/auth">Sign in</a>
+    </nav>
+
+    <div class="actions">
+      <app-search-bar></app-search-bar>
+      <button class="hamburger" (click)="toggleMobileMenu()" aria-label="Toggle menu">
+        <span [class.open]="mobileMenuOpen">☰</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav-mobile" *ngIf="mobileMenuOpen">
+    <a routerLink="/search-listing" (click)="toggleMobileMenu()">Rent</a>
+    <a routerLink="/list" (click)="toggleMobileMenu()">List Property</a>
+    <a routerLink="/about" (click)="toggleMobileMenu()">About</a>
+    <a routerLink="/auth" (click)="toggleMobileMenu()">Sign in</a>
+  </nav>
+</header>

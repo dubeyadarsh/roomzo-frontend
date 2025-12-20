@@ -1,0 +1,6 @@
+.rz-search { display:flex; gap:8px; align-items:center; }
+.rz-search input { padding:8px 12px; border-radius:8px; border:1px solid #e6eef8; min-width:220px; }
+.rz-search button { padding:8px 12px; border-radius:8px; background:#1e3a8a; color:#fff; border:0; cursor:pointer; }
+@media (max-width:900px) {
+  .rz-search input { min-width:120px; }
+}

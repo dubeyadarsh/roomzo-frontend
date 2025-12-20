@@ -1,0 +1,80 @@
+<app-hero></app-hero>
+
+<section class="featured-section">
+  <div class="container">
+    
+    <div class="section-header">
+      <h2>Featured Listings</h2>
+      <p>Hand-picked properties for you.</p>
+    </div>
+
+    <div class="listings-grid">
+      
+      <div class="listing-card" *ngFor="let item of listings">
+        
+        <div class="card-image">
+          <img [src]="item.image" [alt]="item.title">
+          
+          <span class="badge" [ngClass]="item.badge.color">
+            {{ item.badge.text }}
+          </span>
+
+          <button class="favorite-btn">
+            <mat-icon>favorite_border</mat-icon>
+          </button>
+
+          <div class="rating-badge" *ngIf="item.rating">
+            <mat-icon>star</mat-icon> {{ item.rating }}
+          </div>
+        </div>
+
+        <div class="card-content">
+          
+          <div class="card-top">
+            <div class="title-row">
+              <h3>{{ item.title }}</h3>
+              <div class="price-block">
+                <span class="price">{{ formatPrice(item.price) }}</span>
+                <span class="unit" *ngIf="item.priceUnit">{{ item.priceUnit }}</span>
+              </div>
+            </div>
+            
+            <div class="location-row">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ item.location }}</span>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="specs-row">
+            <div class="spec-item">
+              <mat-icon>bed</mat-icon>
+              <span>{{ item.specs.beds }} Beds</span>
+            </div>
+            <div class="spec-item">
+              <mat-icon>bathtub</mat-icon>
+              <span>{{ item.specs.baths }} Baths</span>
+            </div>
+            <div class="spec-item">
+              <mat-icon>square_foot</mat-icon>
+              <span>{{ item.specs.area | number }} sqft</span>
+            </div>
+          </div>
+
+         
+    <button class="btn-outline full-width view-btn" (click)="viewDetails(item.id)">
+            View Details <mat-icon>arrow_forward</mat-icon>
+            </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-footer">
+      <button class="explore-btn">Explore All Listings <mat-icon>arrow_right_alt</mat-icon></button>
+    </div>
+
+  </div>
+  <app-contact></app-contact>
+</section>
+

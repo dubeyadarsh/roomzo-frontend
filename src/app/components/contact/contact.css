@@ -1,0 +1,154 @@
+:host {
+  --primary: #1e3a8a;       /* Deep Blue */
+  --primary-hover: #1e40af;
+  --bg-page: #f9fafb;       /* Very light gray bg */
+  --bg-white: #ffffff;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --radius: 12px;
+  
+  font-family: 'Inter', sans-serif;
+  display: block;
+  background-color: var(--bg-page);
+  min-height: 100vh;
+}
+
+.page-wrapper { padding: 40px 20px; }
+.container { max-width: 1100px; margin: 0 auto; }
+
+/* 1. HEADER */
+.page-header { margin-bottom: 40px; }
+.page-header h1 { font-size: 36px; font-weight: 800; color: var(--primary); margin: 0 0 12px 0; }
+.page-header p { font-size: 18px; color: var(--text-muted); max-width: 600px; line-height: 1.5; }
+
+/* 2. GRID LAYOUT */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr; /* Form takes more space */
+  gap: 32px;
+  margin-bottom: 60px;
+}
+
+/* --- Form Card --- */
+.form-card {
+  background: var(--bg-white);
+  padding: 40px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.form-card h2 { font-size: 20px; font-weight: 700; margin: 0 0 24px 0; color: var(--text-main); }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.form-group { margin-bottom: 24px; }
+.form-group label { display: block; font-size: 14px; font-weight: 500; color: var(--text-main); margin-bottom: 8px; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 15px;
+  color: var(--text-main);
+  background: white;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box; /* Fix width issues */
+}
+input:focus, select:focus, textarea:focus { border-color: var(--primary); }
+
+/* Custom Select Wrapper for Icon */
+.select-wrapper { position: relative; }
+.select-wrapper select { appearance: none; cursor: pointer; }
+.select-arrow { position: absolute; right: 12px; top: 12px; pointer-events: none; color: var(--text-muted); }
+
+.submit-btn {
+  background: var(--primary); color: white; border: none;
+  padding: 14px 28px; font-size: 16px; font-weight: 600; border-radius: 6px;
+  cursor: pointer; transition: 0.2s;
+}
+.submit-btn:hover { background: var(--primary-hover); }
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.form-footer { margin-top: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.error { color: #dc2626; font-size: 12px; margin-top: 4px; }
+
+/* --- Info Column --- */
+.info-column { display: flex; flex-direction: column; gap: 24px; }
+
+/* Info Card */
+.info-card {
+  background: var(--bg-white); padding: 32px; border-radius: var(--radius);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.info-card h3 { font-size: 18px; font-weight: 700; margin: 0 0 24px 0; }
+
+.info-item { display: flex; gap: 16px; margin-bottom: 24px; }
+.info-item:last-child { margin-bottom: 0; }
+
+.icon-circle {
+  width: 40px; height: 40px; background: #eff6ff; color: var(--primary);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 2px; }
+.value { font-size: 15px; font-weight: 600; color: var(--text-main); }
+.sub-value { font-size: 14px; color: var(--text-muted); }
+
+/* Map Card */
+.map-card {
+  height: 250px; border-radius: var(--radius); overflow: hidden; position: relative;
+  background: #ddd; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+.map-card img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(20%); }
+
+.map-overlay {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.map-pin { font-size: 48px; width: 48px; height: 48px; color: #dc2626; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); }
+
+.directions-btn {
+  position: absolute; bottom: 20px; left: 20px;
+  background: white; color: var(--text-main);
+  padding: 10px 16px; border-radius: 8px; font-weight: 600; font-size: 14px;
+  text-decoration: none; display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); transition: 0.2s;
+}
+.directions-btn:hover { transform: translateY(-2px); }
+.directions-btn mat-icon { font-size: 18px; width: 18px; height: 18px; color: var(--primary); }
+
+
+/* 3. FAQ BANNER */
+.faq-banner {
+  background: #f3f4f6; /* Gray banner */
+  border-radius: var(--radius);
+  padding: 32px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  border: 1px solid #e5e7eb;
+}
+.faq-content h3 { font-size: 18px; font-weight: 700; margin: 0 0 4px 0; }
+.faq-content p { color: var(--text-muted); margin: 0; font-size: 14px; }
+
+.btn-white {
+  background: white; border: 1px solid var(--border); padding: 10px 20px;
+  border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.btn-white:hover { background: #f9fafb; border-color: var(--text-muted); }
+
+/* 4. FOOTER */
+.simple-footer {
+  margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; color: var(--text-muted); font-size: 13px;
+}
+.footer-links a { color: var(--text-muted); text-decoration: none; margin-left: 20px; }
+.footer-links a:hover { color: var(--text-main); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .contact-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; gap: 0; }
+  .faq-banner { flex-direction: column; text-align: center; gap: 20px; }
+  .simple-footer { flex-direction: column; align-items: center; gap: 10px; }
+  .footer-links a { margin: 0 10px; }
+}
