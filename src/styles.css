@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'ngx-toastr/toastr';
 .hero-content h1 { font-size:2.25rem; margin:0 0 12px; color:#0f172a; }
 .rz-footer .logo { color:#fff; font-weight:700; text-decoration:none; font-size:1.1rem; }
 

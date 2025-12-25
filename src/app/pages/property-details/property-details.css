@@ -163,3 +163,28 @@ h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px 0; }
 }
 .not-found-state h2 { margin: 16px 0 8px; color: #374151; }
 .not-found-state p { color: #6b7280; margin-bottom: 24px; }
+
+.status-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-radius: 8px; /* Slightly rounded corners */
+  color: white;       /* Text is always white */
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+}
+
+/* AVAILABLE: Professional Emerald */
+.status-tag.available {
+  background-color: #10b981; /* Tailwind Emerald 500 */
+  /* Gradient optional: background: linear-gradient(135deg, #10b981 0%, #059669 100%); */
+}
+
+/* RENTED: Professional Slate */
+.status-tag.rented {
+  background-color: #64748b; /* Tailwind Slate 500 */
+}

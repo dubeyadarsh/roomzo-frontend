@@ -3,21 +3,26 @@
 </div>
 
 <div class="page-container" *ngIf="!isLoading && property">
-  
+
   <header class="property-header">
     <div class="header-content">
       <div class="title-section">
         <div class="breadcrumbs">
-          <a routerLink="/explore">Explore</a> &gt; {{ property.details.address.city }}
+          <a routerLink="/explore">Explore</a> &gt; {{ property.city }}
         </div>
-        <h1>{{ property.final.title }}</h1>
+        <h1>{{ property.propertyType }} in {{ property.city }}</h1>
         <p class="address">
-          <mat-icon>location_on</mat-icon> 
-          {{ property.details.address.street }}, {{ property.details.address.city }}, {{ property.details.address.state }}
+          <mat-icon>location_on</mat-icon>
+          {{ property.street }}, {{ property.city }}, {{ property.state }}
         </p>
       </div>
       <div class="action-buttons">
-        <button class="btn-outline"><mat-icon>ios_share</mat-icon> Share</button>
+        <button class="btn-outline" (click)="shareProperty()" [class.success-btn]="isCopied">
+
+          <mat-icon>{{ isCopied ? 'check' : 'ios_share' }}</mat-icon>
+          {{ isCopied ? 'Copied!' : 'Share' }}
+
+        </button>
         <button class="btn-outline"><mat-icon>favorite_border</mat-icon> Save</button>
       </div>
     </div>
@@ -25,38 +30,69 @@
 
   <section class="gallery-section">
     <div class="gallery-grid">
+
       <div class="main-img">
-        <img [src]="property.final.images[0] || 'assets/placeholder.jpg'" alt="Main">
+        <a [href]="(property.photos && property.photos.length > 0) ? property.photos[0].photoUrl : '#'" target="_blank">
+          <img
+            [src]="(property.photos && property.photos.length > 0) ? property.photos[0].photoUrl : 'assets/placeholder.jpg'"
+            alt="Main">
+        </a>
       </div>
-      <div class="side-img"><img [src]="property.final.images[1] || property.final.images[0]" alt="Interior"></div>
-      <div class="side-img"><img [src]="property.final.images[2] || property.final.images[0]" alt="Kitchen"></div>
-      <div class="side-img"><img [src]="property.final.images[3] || property.final.images[0]" alt="Bedroom"></div>
+
+      <div class="side-img">
+        <a [href]="(property.photos?.length > 1) ? property.photos[1].photoUrl : (property.photos?.[0]?.photoUrl || '#')"
+          target="_blank">
+          <img
+            [src]="(property.photos?.length > 1) ? property.photos[1].photoUrl : (property.photos?.[0]?.photoUrl || 'assets/placeholder.jpg')"
+            alt="Side 1">
+        </a>
+      </div>
+
+      <div class="side-img">
+        <a [href]="(property.photos?.length > 2) ? property.photos[2].photoUrl : (property.photos?.[0]?.photoUrl || '#')"
+          target="_blank">
+          <img
+            [src]="(property.photos?.length > 2) ? property.photos[2].photoUrl : (property.photos?.[0]?.photoUrl || 'assets/placeholder.jpg')"
+            alt="Side 2">
+        </a>
+      </div>
+
+      <div class="side-img">
+        <a [href]="(property.photos?.length > 3) ? property.photos[3].photoUrl : (property.photos?.[0]?.photoUrl || '#')"
+          target="_blank">
+          <img
+            [src]="(property.photos?.length > 3) ? property.photos[3].photoUrl : (property.photos?.[0]?.photoUrl || 'assets/placeholder.jpg')"
+            alt="Side 3">
+        </a>
+      </div>
+
       <div class="side-img relative">
-        <img [src]="property.final.images[0]" alt="More">
-        <button class="view-photos-btn">
+        <a [href]="(property.photos?.length > 0) ? property.photos[0].photoUrl : '#'" target="_blank">
+          <img [src]="(property.photos?.length > 0) ? property.photos[0].photoUrl : 'assets/placeholder.jpg'" alt="More"
+            style="filter: brightness(0.5);">
+        </a>
+        <!-- <button class="view-photos-btn">
           <mat-icon>grid_view</mat-icon> Show all photos
-        </button>
+        </button> -->
       </div>
+
     </div>
   </section>
 
   <section class="specs-bar">
-    <div class="spec-item"><mat-icon>bed</mat-icon> <strong>{{ property.details.bedrooms }}</strong> Beds</div>
-    <div class="spec-item"><mat-icon>bathtub</mat-icon> <strong>{{ property.details.bathrooms }}</strong> Baths</div>
-    <div class="spec-item"><mat-icon>square_foot</mat-icon> <strong>{{ property.details.propertySize }}</strong> Sq Ft</div>
-    <div class="spec-item"><mat-icon>pets</mat-icon> <strong>Allowed</strong></div>
+    <div class="spec-item"><mat-icon>bed</mat-icon> <strong>{{ property.bedrooms }}</strong> Beds</div>
+    <div class="spec-item"><mat-icon>bathtub</mat-icon> <strong>{{ property.bathrooms }}</strong> Baths</div>
+    <div class="spec-item"><mat-icon>square_foot</mat-icon> <strong>{{ property.propertySize }}</strong> Sq Ft</div>
+    <div class="spec-item"><mat-icon>pets</mat-icon> <strong>{{ property.pets ? 'Allowed' : 'No Pets' }}</strong></div>
   </section>
 
   <div class="content-layout">
-    
     <div class="details-column">
-      
       <section class="info-block">
         <h2>About this home</h2>
-        <p [class.truncated]="!showFullDescription">
-          {{ property.final.description }}
-        </p>
-        <button class="link-btn" (click)="showFullDescription = !showFullDescription">
+        <p [class.truncated]="!showFullDescription">{{ property.description }}</p>
+        <button class="link-btn" (click)="showFullDescription = !showFullDescription"
+          *ngIf="property.description?.length > 150">
           {{ showFullDescription ? 'Show less' : 'Show more' }} <mat-icon>expand_more</mat-icon>
         </button>
       </section>
@@ -76,9 +112,20 @@
 
       <section class="info-block">
         <h2>Where you'll be</h2>
-        <p style="margin-bottom: 12px;">{{ property.details.address.city }}, {{ property.details.address.state }}</p>
-        <div class="map-placeholder">
-          <mat-icon>home</mat-icon> Map View
+        <p style="margin-bottom: 12px;">{{ property.city }}, {{ property.state }}</p>
+
+        <div class="map-container"
+          style="height: 300px; width: 100%; border-radius: 12px; overflow: hidden; background: #eee;">
+
+          <iframe *ngIf="mapUrl" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0"
+            marginwidth="0" [src]="mapUrl" style="border: 0;">
+          </iframe>
+
+          <div *ngIf="!mapUrl"
+            style="height: 100%; display: flex; align-items: center; justify-content: center; color: #888;">
+            <mat-icon class="spinner" style="margin-right: 8px;">map</mat-icon> Loading map...
+          </div>
+
         </div>
       </section>
     </div>
@@ -86,24 +133,29 @@
     <div class="sidebar-column">
       <div class="booking-card">
         <div class="card-header">
-           <div class="price">${{ property.final.rentAmount | number }}<span>/mo</span></div>
-           <div class="rating"><mat-icon>star</mat-icon> 4.9 (12)</div>
+          <div class="price">{{ formatPrice(property.rentAmount) }}<span>/mo</span></div>
         </div>
-        <div class="status-tag">Available Now</div>
-
-        <button class="btn-primary full-width">Request to Book</button>
-        <button class="btn-outline full-width">Schedule a Tour</button>
+        <div class="status-tag" [ngClass]="{'available': !property.isRented, 'rented': property.isRented}">
+          <mat-icon *ngIf="!property.isRented" class="tiny-icon">check_circle</mat-icon>
+          <mat-icon *ngIf="property.isRented" class="tiny-icon">block</mat-icon>
+          {{ property.isRented ? 'Rented' : 'Available Now' }}
+        </div>
+        <!-- <button class="btn-primary full-width" [disabled]="property.isRented">Request to Book</button> -->
+      <button class="btn-outline full-width" (click)="scheduleTour()">
+          Schedule a Tour
+      </button>
       </div>
-
       <div class="agent-card">
         <div class="agent-info">
           <div class="avatar">AG</div>
           <div>
-            <h4>Agent Name</h4>
-            <p>Premier Agent</p>
+            <h4>Listing Agent</h4>
+            <p>Property Manager</p>
           </div>
         </div>
-        <button class="btn-text">Contact Agent</button>
+        <button class="btn-text" (click)="contactAgent()">
+          Contact Agent
+      </button>
       </div>
     </div>
   </div>
@@ -111,12 +163,13 @@
   <section class="similar-section" *ngIf="similarProperties.length > 0">
     <h2>Similar homes you might like</h2>
     <div class="similar-grid">
-      <a [routerLink]="['/property', home.id]" class="similar-card" *ngFor="let home of similarProperties">
-        <img [src]="home.final.images[0] || 'assets/placeholder.jpg'" alt="Home">
+      <a [routerLink]="['/property-details', home.id]" class="similar-card" *ngFor="let home of similarProperties">
+        <img [src]="(home.photos && home.photos.length > 0) ? home.photos[0].photoUrl : 'assets/placeholder.jpg'"
+          alt="Home">
         <div class="sim-details">
-          <div class="sim-price">${{ home.final.rentAmount | number }}<span>/mo</span></div>
-          <h4>{{ home.final.title }}</h4>
-          <p>{{ home.details.bedrooms }} Beds • {{ home.details.bathrooms }} Baths</p>
+          <div class="sim-price">{{ formatPrice(home.rentAmount) }}<span>/mo</span></div>
+          <h4>{{ home.propertyType }} in {{ home.city }}</h4>
+          <p>{{ home.bedrooms }} Beds • {{ home.bathrooms }} Baths</p>
         </div>
       </a>
     </div>

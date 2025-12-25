@@ -19,7 +19,7 @@
 
 /* 1. HEADER */
 .page-header { margin-bottom: 40px; }
-.page-header h1 { font-size: 36px; font-weight: 800; color: var(--primary); margin: 0 0 12px 0; }
+.page-header h1 { font-size: 36px; font-weight: 700;  margin: 0 0 12px 0; }
 .page-header p { font-size: 18px; color: var(--text-muted); max-width: 600px; line-height: 1.5; }
 
 /* 2. GRID LAYOUT */
