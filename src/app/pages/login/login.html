@@ -1,0 +1,37 @@
+<div class="login-page">
+  <div class="login-card">
+    
+    <div class="brand-section">
+      <div class="icon-circle">
+        <mat-icon>verified_user</mat-icon>
+      </div>
+      <h2>User Login</h2>
+      <p>Verify your number to manage listings</p>
+    </div>
+
+    <div *ngIf="step === 'MOBILE'" class="form-step">
+      <label>Mobile Number</label>
+      <div class="input-group">
+        <span class="prefix">+91</span>
+        <input type="tel" [(ngModel)]="mobileNumber" placeholder="98765 43210" maxlength="10">
+      </div>
+      <button class="btn-primary" (click)="onSendOtp()" [disabled]="isLoading">
+        {{ isLoading ? 'Sending...' : 'Send OTP' }}
+      </button>
+    </div>
+
+    <div *ngIf="step === 'OTP'" class="form-step fade-in">
+      <label>Enter OTP sent to +91 {{ mobileNumber }}</label>
+      <input type="text" [(ngModel)]="otp" class="otp-input" placeholder="• • • •" maxlength="6">
+      
+      <button class="btn-primary" (click)="onVerifyOtp()" [disabled]="isLoading">
+        {{ isLoading ? 'Verifying...' : 'Verify & Login' }}
+      </button>
+
+      <button class="btn-link" (click)="step = 'MOBILE'" [disabled]="isLoading">
+        Change Mobile Number
+      </button>
+    </div>
+
+  </div>
+</div>

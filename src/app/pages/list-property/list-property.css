@@ -429,3 +429,118 @@ input:focus, textarea:focus { outline: 2px solid var(--primary-blue); border-col
   padding: 4px 0;
   font-weight: 600;
 }
+/* --- Step 3: Guidebook & Rules Styles --- */
+
+/* Rule Chips */
+.rules-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.rule-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border-gray);
+  border-radius: 24px; /* Pill shape */
+  background: var(--bg-white);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-weight: 500;
+  color: var(--text-medium);
+}
+
+.rule-chip:hover {
+  background: var(--bg-gray);
+  border-color: var(--border-hover);
+}
+
+.rule-chip.active {
+  background: var(--primary-blue-light);
+  border-color: var(--primary-blue);
+  color: var(--primary-blue);
+  font-weight: 600;
+}
+
+.rule-chip mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+/* Divider */
+.divider-line {
+  height: 1px;
+  background: var(--border-gray);
+  margin: 32px 0;
+}
+
+/* Dynamic List: Nearby Places */
+.nearby-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.nearby-icon-box {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-gray);
+  border-radius: var(--radius-md);
+  color: var(--text-medium);
+}
+
+/* Flex columns for inputs */
+.input-col-main { flex: 2; }
+.input-col-side { flex: 1; }
+
+.nearby-row input {
+  margin: 0; /* Override existing margin */
+}
+
+/* Delete button for rows */
+.btn-icon-danger {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-icon-danger:hover {
+  background: #fee2e2;
+}
+
+/* Add Button (Dashed) */
+.btn-dashed {
+  width: 100%;
+  padding: 14px;
+  border: 2px dashed var(--border-gray);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--primary-blue);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+}
+
+.btn-dashed:hover {
+  border-color: var(--primary-blue);
+  background: var(--primary-blue-light);
+}

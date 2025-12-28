@@ -87,7 +87,7 @@ export class PropertyService {
         const photoUrls = responses
           .filter(res => res && res.status === 1)
           .map(res => environment.hostingerUploadUrl +  res.url);
-
+      const user=  JSON.parse(localStorage.getItem("ownerUser") || '{}');
       const { final, ...rest } = formData;
         const { images, ...finalWithoutImages } = final;
 
@@ -95,7 +95,7 @@ export class PropertyService {
           ...rest,
           final: finalWithoutImages, // keep final object but without images
           photos: photoUrls      ,     // add uploaded photo URLs
-          ownerId: 1
+          ownerId: user.id
         };
 
         return this.http.post(`${this.baseUrl}/listings/add`, finalPayload);
@@ -195,5 +195,15 @@ export class PropertyService {
         limit: '1'
       }
     });
+  }
+  getMyListings(ownerId: number): Observable<any> {
+    // Matches your Java Controller: @GetMapping("/owner/{ownerId}")
+return this.http.get(`${this.baseUrl}/listings/owner/${ownerId}`);
+  }
+  // --- Update Listing (PUT) ---
+  updateListing(id: string, data: any): Observable<any> {
+    // Matches Backend: @PutMapping("/listings/update/{id}")
+    return this.http.
+    put(`${this.baseUrl}/listings/update/${id}`, data);
   }
 }

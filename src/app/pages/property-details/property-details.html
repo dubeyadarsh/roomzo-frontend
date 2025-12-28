@@ -18,10 +18,8 @@
       </div>
       <div class="action-buttons">
         <button class="btn-outline" (click)="shareProperty()" [class.success-btn]="isCopied">
-
           <mat-icon>{{ isCopied ? 'check' : 'ios_share' }}</mat-icon>
           {{ isCopied ? 'Copied!' : 'Share' }}
-
         </button>
         <button class="btn-outline"><mat-icon>favorite_border</mat-icon> Save</button>
       </div>
@@ -29,53 +27,49 @@
   </header>
 
   <section class="gallery-section">
-    <div class="gallery-grid">
-
+    <div class="gallery-grid desktop-only">
       <div class="main-img">
         <a [href]="(property.photos && property.photos.length > 0) ? property.photos[0].photoUrl : '#'" target="_blank">
-          <img
-            [src]="(property.photos && property.photos.length > 0) ? property.photos[0].photoUrl : 'assets/placeholder.jpg'"
-            alt="Main">
+          <img [src]="(property.photos && property.photos.length > 0) ? property.photos[0].photoUrl : 'assets/placeholder.jpg'" alt="Main">
         </a>
       </div>
-
-      <div class="side-img">
-        <a [href]="(property.photos?.length > 1) ? property.photos[1].photoUrl : (property.photos?.[0]?.photoUrl || '#')"
-          target="_blank">
-          <img
-            [src]="(property.photos?.length > 1) ? property.photos[1].photoUrl : (property.photos?.[0]?.photoUrl || 'assets/placeholder.jpg')"
-            alt="Side 1">
+      <div class="side-img" *ngIf="property.photos?.length > 1">
+        <a [href]="property.photos[1].photoUrl" target="_blank">
+          <img [src]="property.photos[1].photoUrl" alt="Side 1">
         </a>
       </div>
-
-      <div class="side-img">
-        <a [href]="(property.photos?.length > 2) ? property.photos[2].photoUrl : (property.photos?.[0]?.photoUrl || '#')"
-          target="_blank">
-          <img
-            [src]="(property.photos?.length > 2) ? property.photos[2].photoUrl : (property.photos?.[0]?.photoUrl || 'assets/placeholder.jpg')"
-            alt="Side 2">
+      <div class="side-img" *ngIf="property.photos?.length > 2">
+        <a [href]="property.photos[2].photoUrl" target="_blank">
+          <img [src]="property.photos[2].photoUrl" alt="Side 2">
         </a>
       </div>
-
-      <div class="side-img">
-        <a [href]="(property.photos?.length > 3) ? property.photos[3].photoUrl : (property.photos?.[0]?.photoUrl || '#')"
-          target="_blank">
-          <img
-            [src]="(property.photos?.length > 3) ? property.photos[3].photoUrl : (property.photos?.[0]?.photoUrl || 'assets/placeholder.jpg')"
-            alt="Side 3">
+      <div class="side-img" *ngIf="property.photos?.length > 3">
+        <a [href]="property.photos[3].photoUrl" target="_blank">
+          <img [src]="property.photos[3].photoUrl" alt="Side 3">
         </a>
       </div>
-
-      <div class="side-img relative">
-        <a [href]="(property.photos?.length > 0) ? property.photos[0].photoUrl : '#'" target="_blank">
-          <img [src]="(property.photos?.length > 0) ? property.photos[0].photoUrl : 'assets/placeholder.jpg'" alt="More"
-            style="filter: brightness(0.5);">
+      <div class="side-img relative" *ngIf="property.photos?.length > 4">
+        <a [href]="property.photos[4].photoUrl" target="_blank">
+          <img [src]="property.photos[4].photoUrl" alt="More" style="filter: brightness(0.5);">
         </a>
-        <!-- <button class="view-photos-btn">
-          <mat-icon>grid_view</mat-icon> Show all photos
-        </button> -->
       </div>
+    </div>
 
+    <div class="mobile-only">
+      <swiper-container 
+        style="--swiper-navigation-color: #fff; --swiper-pagination-color: #fff;" 
+        navigation="true" 
+        pagination="true" 
+        loop="true">
+
+        <swiper-slide *ngFor="let photo of property.photos">
+          <img [src]="photo.photoUrl || 'assets/placeholder.jpg'" alt="Property Image" loading="lazy">
+        </swiper-slide>
+
+        <swiper-slide *ngIf="!property.photos || property.photos.length === 0">
+           <img src="assets/placeholder.jpg" alt="Placeholder">
+        </swiper-slide>
+      </swiper-container>
     </div>
   </section>
 
@@ -108,6 +102,56 @@
         </div>
       </section>
 
+      <div class="divider" *ngIf="property.guidebook"></div>
+
+      <section class="info-block guidebook-section" *ngIf="property.guidebook">
+        
+        <div class="guidebook-group" *ngIf="property.guidebook.rules?.length > 0 || property.guidebook.customRules">
+          <h2>House Rules</h2>
+          
+          <ul class="rules-list" *ngIf="property.guidebook.rules?.length > 0">
+            <li *ngFor="let rule of property.guidebook.rules">
+              <mat-icon class="rule-icon">assignment</mat-icon>
+              <span>{{ rule.ruleText || rule }}</span>
+            </li>
+          </ul>
+
+          <div class="custom-note" *ngIf="property.guidebook.customRules">
+            <mat-icon>format_quote</mat-icon>
+            <p>{{ property.guidebook.customRules }}</p>
+          </div>
+        </div>
+
+        <div class="guidebook-group" *ngIf="property.guidebook.nearbyPlaces?.length > 0">
+          <h2 style="margin-top: 24px;">What's nearby</h2>
+          <p class="subtitle">Selected by the host</p>
+
+          <div class="nearby-grid">
+            <div class="nearby-card" *ngFor="let place of property.guidebook.nearbyPlaces">
+              <div class="place-icon">
+                <mat-icon *ngIf="place.type === 'transport'">train</mat-icon>
+                <mat-icon *ngIf="place.type === 'restaurant'">restaurant</mat-icon>
+                <mat-icon *ngIf="place.type === 'shopping'">shopping_bag</mat-icon>
+                <mat-icon *ngIf="place.type === 'attraction'">attractions</mat-icon>
+                <mat-icon *ngIf="place.type === 'hospital'">local_hospital</mat-icon>
+                <mat-icon *ngIf="!['transport','restaurant','shopping','attraction','hospital'].includes(place.type)">place</mat-icon>
+              </div>
+              
+              <div class="place-details">
+                <div class="place-header">
+                  <span class="place-name">{{ place.name }}</span>
+                  <span class="place-type">{{ place.type | titlecase }}</span>
+                </div>
+                <div class="place-dist">
+                  {{ place.distance }} 
+                  <span *ngIf="!place.distance?.includes('km') && !place.distance?.includes('mi')">km</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       <div class="divider"></div>
 
       <section class="info-block">
@@ -116,16 +160,12 @@
 
         <div class="map-container"
           style="height: 300px; width: 100%; border-radius: 12px; overflow: hidden; background: #eee;">
-
           <iframe *ngIf="mapUrl" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0"
-            marginwidth="0" [src]="mapUrl" style="border: 0;">
-          </iframe>
-
+            marginwidth="0" [src]="mapUrl" style="border: 0;"></iframe>
           <div *ngIf="!mapUrl"
             style="height: 100%; display: flex; align-items: center; justify-content: center; color: #888;">
             <mat-icon class="spinner" style="margin-right: 8px;">map</mat-icon> Loading map...
           </div>
-
         </div>
       </section>
     </div>
@@ -140,22 +180,17 @@
           <mat-icon *ngIf="property.isRented" class="tiny-icon">block</mat-icon>
           {{ property.isRented ? 'Rented' : 'Available Now' }}
         </div>
-        <!-- <button class="btn-primary full-width" [disabled]="property.isRented">Request to Book</button> -->
-      <button class="btn-outline full-width" (click)="scheduleTour()">
-          Schedule a Tour
-      </button>
+        <button class="btn-outline full-width" (click)="scheduleTour()">Schedule a Tour</button>
       </div>
       <div class="agent-card">
         <div class="agent-info">
           <div class="avatar">AG</div>
           <div>
-            <h4>Listing Agent</h4>
-            <p>Property Manager</p>
+            <h4>Listing Owner</h4>
+            <p>Property Owner</p>
           </div>
         </div>
-        <button class="btn-text" (click)="contactAgent()">
-          Contact Agent
-      </button>
+        <button class="btn-text" (click)="contactAgent()">Contact Owner</button>
       </div>
     </div>
   </div>
@@ -164,8 +199,7 @@
     <h2>Similar homes you might like</h2>
     <div class="similar-grid">
       <a [routerLink]="['/property-details', home.id]" class="similar-card" *ngFor="let home of similarProperties">
-        <img [src]="(home.photos && home.photos.length > 0) ? home.photos[0].photoUrl : 'assets/placeholder.jpg'"
-          alt="Home">
+        <img [src]="(home.photos && home.photos.length > 0) ? home.photos[0].photoUrl : 'assets/placeholder.jpg'" alt="Home">
         <div class="sim-details">
           <div class="sim-price">{{ formatPrice(home.rentAmount) }}<span>/mo</span></div>
           <h4>{{ home.propertyType }} in {{ home.city }}</h4>
@@ -181,4 +215,51 @@
   <mat-icon style="font-size: 64px; height: 64px; width: 64px; color: #ccc;">search_off</mat-icon>
   <h2>Property not found</h2>
   <button mat-flat-button color="primary" routerLink="/explore">Back to Explore</button>
+</div>
+<div class="modal-overlay" *ngIf="showContactModal" (click)="closeContactModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    
+    <div class="modal-header">
+      <h3>Owner Details</h3>
+      <button class="close-btn" (click)="closeContactModal()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="owner-profile">
+        <div class="avatar-large">
+           {{ ownerDetails.name.charAt(0) }}
+        </div>
+        <h4>{{ ownerDetails.name }}</h4>
+        <p class="verified-badge"><mat-icon>verified</mat-icon> Verified Owner</p>
+      </div>
+
+      <div class="contact-info">
+        <div class="info-row">
+          <mat-icon>phone</mat-icon>
+          <div>
+            <label>Mobile Number</label>
+            <a [href]="'tel:' + ownerDetails.phone" class="contact-link">{{ ownerDetails.phone }}</a>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <mat-icon>email</mat-icon>
+          <div>
+            <label>Email Address</label>
+            <a [href]="'mailto:' + ownerDetails.email" class="contact-link">{{ ownerDetails.email }}</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <!-- <a [href]="'tel:' + ownerDetails.phone" class="btn-primary full-width">
+          <mat-icon>call</mat-icon> Call Now
+        </a> -->
+        <button class="btn-outline full-width" (click)="closeContactModal()">Close</button>
+      </div>
+    </div>
+
+  </div>
 </div>

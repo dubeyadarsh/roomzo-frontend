@@ -1,0 +1,88 @@
+<div class="page-container">
+  
+  <div class="header">
+  <button mat-button (click)="cancel()">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+  <h1>Edit Property</h1>
+</div>
+
+  <div *ngIf="isLoading" class="loading-state">
+    <mat-icon class="spinner">sync</mat-icon> Loading details...
+  </div>
+
+  <form *ngIf="!isLoading && listing" (submit)="onSubmit()" class="edit-form">
+
+    <section class="locked-section">
+      <div class="lock-badge">
+        <mat-icon>lock</mat-icon> Fixed Details
+      </div>
+      
+      <div class="grid-row">
+        <div class="form-group">
+          <label>Property Name</label>
+          <input type="text" [value]="listing.propertyName" disabled>
+        </div>
+        <div class="form-group">
+          <label>Property Type</label>
+          <input type="text" [value]="listing.propertyType" disabled>
+        </div>
+      </div>
+
+      <div class="grid-row">
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" [value]="listing.city + ', ' + listing.state" disabled>
+        </div>
+        <div class="form-group">
+          <label>Area (Sq Ft)</label>
+          <input type="text" [value]="listing.propertySize" disabled>
+        </div>
+      </div>
+      
+      <div class="grid-row">
+        <div class="form-group">
+          <label>Bedrooms</label>
+          <input type="text" [value]="listing.bedrooms" disabled>
+        </div>
+        <div class="form-group">
+          <label>Bathrooms</label>
+          <input type="text" [value]="listing.bathrooms" disabled>
+        </div>
+      </div>
+    </section>
+
+    <section class="editable-section">
+      <h3>Update Information</h3>
+      
+      <div class="form-group">
+        <label>Monthly Rent (₹)</label>
+        <input type="number" [(ngModel)]="listing.rentAmount" name="rentAmount" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea [(ngModel)]="listing.description" name="description" rows="6" required></textarea>
+      </div>
+
+      <div class="amenities-group">
+        <h4>Amenities</h4>
+        <div class="amenities-grid">
+          <label class="checkbox-label" *ngFor="let item of amenitiesList">
+            <input type="checkbox" [(ngModel)]="listing[item.key]" [name]="item.key">
+            {{ item.label }}
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn-secondary" (click)="cancel()">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="isSaving">
+          {{ isSaving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+
+    </section>
+
+  </form>
+</div>

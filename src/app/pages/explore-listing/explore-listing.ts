@@ -5,8 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
-import { Router } from '@angular/router';
-
+import { ActivatedRoute, Router } from '@angular/router'; // 1. Ensure ActivatedRoute is imported
 // 1. Add RxJS Imports
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -54,13 +53,20 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
   totalPages = 0;
   pagesArray: number[] = [];
 
+  guidebook = {
+    customRules: '',
+    rules: [] as string[],           // Array of strings
+    nearby: [] as any[]              // Array of objects { name, type, distance }
+  };
+  placeTypes = ['transport', 'restaurant', 'shopping', 'attraction', 'hospital', 'other'];
   // 2. Add Subscription Variable (To track active request)
   private searchSubscription: Subscription | null = null;
 
   constructor(
     private propertyService: PropertyService,
     private cd: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +79,27 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.loadListings();
+    // 3. LISTEN FOR QUERY PARAMS (The Magic Link)
+    this.route.queryParams.subscribe(params => {
+      if (params['city'] && params['state']) {
+        const city = params['city'];
+        const state = params['state'];
+
+        // A. Set the internal location object
+        this.selectedLocation = { city, state };
+
+        // B. Update the visual input text (without triggering valueChanges logic if possible)
+        // We set it as a string so the user sees "Mumbai, Maharashtra"
+        this.searchControl.setValue(`${city}, ${state}`, { emitEvent: false });
+
+        // C. Load data immediately
+        this.loadListings();
+      } else {
+        // If no params, just load default data
+        this.loadListings();
+      }
+    });
+    
   }
 
   // 3. Cleanup on component destroy

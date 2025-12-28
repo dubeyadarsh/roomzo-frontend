@@ -8,11 +8,40 @@
       <a routerLink="/search-listing">Rent</a>
       <a routerLink="/list">List Property</a>
       <a routerLink="/about">About</a>
-      <a routerLink="/auth">Sign in</a>
+      <a [routerLink]="['/']" fragment="contactUs" routerLinkActive="active">Contact Us</a>
     </nav>
 
     <div class="actions">
       <app-search-bar></app-search-bar>
+
+      <div class="auth-desktop">
+        
+
+        <div *ngIf="isLoggedIn" class="profile-menu">
+          <button class="profile-btn" (click)="toggleMenu()">
+            <div class="avatar-circle">U</div> <mat-icon>expand_more</mat-icon>
+          </button>
+
+          <div class="dropdown" *ngIf="isMenuOpen">
+            <div class="user-info">
+              <strong>Your Account</strong>
+              <span>{{ userMobile }}</span>
+            </div>
+            
+            <div class="divider"></div>
+
+            <a routerLink="/my-listings" class="menu-item" (click)="closeMenu()">
+              <mat-icon>edit_note</mat-icon> Manage Listings
+            </a>
+            
+            <div class="divider"></div>
+
+            <button class="menu-item logout" (click)="logout()">
+              <mat-icon>logout</mat-icon> Logout
+            </button>
+          </div>
+        </div>
+      </div>
       <button class="hamburger" (click)="toggleMobileMenu()" aria-label="Toggle menu">
         <span [class.open]="mobileMenuOpen">☰</span>
       </button>
@@ -23,6 +52,9 @@
     <a routerLink="/search-listing" (click)="toggleMobileMenu()">Rent</a>
     <a routerLink="/list" (click)="toggleMobileMenu()">List Property</a>
     <a routerLink="/about" (click)="toggleMobileMenu()">About</a>
-    <a routerLink="/auth" (click)="toggleMobileMenu()">Sign in</a>
+    
+    <a *ngIf="!isLoggedIn" routerLink="/login" (click)="toggleMobileMenu()" class="mobile-highlight">Login / Sign up</a>
+    <a *ngIf="isLoggedIn" routerLink="/my-listings" (click)="toggleMobileMenu()">Manage Listings</a>
+    <a *ngIf="isLoggedIn" (click)="logout(); toggleMobileMenu()" class="mobile-logout">Logout</a>
   </nav>
 </header>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-
+import { Router } from '@angular/router'; // <--- 1. Import this
 @Component({
   selector: 'app-contact',
   standalone: true,
@@ -20,7 +20,7 @@ export class ContactComponent {
     { 
       icon: 'phone', 
       title: 'Phone', 
-      content: '+1 (555) 123-4567', 
+      content: '+91 72378 83145', 
       sub: '' 
     },
     { 
@@ -37,7 +37,7 @@ export class ContactComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder,private router: Router) {
     this.contactForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -59,5 +59,8 @@ export class ContactComponent {
     } else {
       this.contactForm.markAllAsTouched();
     }
+  }
+  goToFaq() {
+    this.router.navigate(['/faq']);
   }
 }

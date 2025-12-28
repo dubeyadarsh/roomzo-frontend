@@ -8,3 +8,50 @@
 @media (max-width:900px) {
   .rz-footer .container { flex-direction:column; gap:16px; }
 }
+/* ... Your Existing CSS ... */
+
+.bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: 40px;
+  padding-top: 20px;
+}
+
+.bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.social {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.social-link {
+  color: rgba(255, 255, 255, 0.7); /* Default faint white */
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Hover Effects */
+.social-link:hover {
+  color: #fff; /* Bright white on hover */
+  transform: translateY(-2px); /* Subtle lift */
+}
+
+/* Responsive Fix */
+@media (max-width: 600px) {
+  .bottom-content {
+    flex-direction: column-reverse;
+    gap: 16px;
+    text-align: center;
+  }
+}

@@ -1,6 +1,6 @@
 <div class="page-wrapper">
   
-  <div class="container">
+  <div  class="container">
     
     <header class="page-header">
       <h1>Contact Our Real Estate Experts</h1>
@@ -52,13 +52,13 @@
             {{ isSubmitting ? 'Sending...' : 'Send Message' }}
           </button>
 
-          <p class="form-footer">
+          <p id="contactUs" class="form-footer">
             By submitting this form, you agree to our privacy policy. We typically reply within 24 hours.
           </p>
         </form>
       </div>
 
-      <div class="info-column">
+      <div  class="info-column">
         
         <div class="info-card">
           <h3>Contact Information</h3>
@@ -95,7 +95,7 @@
         <h3>Looking for quick answers?</h3>
         <p>Check out our Frequently Asked Questions to find what you need faster.</p>
       </div>
-      <button class="btn-white">View FAQ</button>
+      <button class="btn-white" (click)="goToFaq()">View FAQ</button>
     </div>
 
    

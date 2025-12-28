@@ -1,12 +1,13 @@
 <div class="page-wrapper">
-
-
   <div class="container">
 
     <div class="progress-header">
       <div class="step-indicator">
         <span class="current-step-label">
-          Step {{currentStep}}: {{ currentStep === 1 ? 'Details' : (currentStep === 2 ? 'Amenities' : 'Final Details')
+          Step {{currentStep}}:
+          {{ currentStep === 1 ? 'Details' :
+          (currentStep === 2 ? 'Amenities' :
+          (currentStep === 3 ? 'Guidebook' : 'Final Details'))
           }}
         </span>
         <span class="total-steps">{{totalSteps}} STEPS TOTAL</span>
@@ -17,7 +18,8 @@
       <div class="step-labels">
         <span [class.active]="currentStep >= 1">Details</span>
         <span [class.active]="currentStep >= 2">Amenities</span>
-        <span [class.active]="currentStep >= 3">Photos</span>
+        <span [class.active]="currentStep >= 3">Guidebook</span>
+        <span [class.active]="currentStep >= 4">Photos</span>
       </div>
     </div>
 
@@ -39,133 +41,79 @@
                 *ngIf="detailsGroup.get('propertyType')?.value === type.value">check_circle</mat-icon>
             </label>
           </div>
-          <div class="error-msg"
-            *ngIf="detailsGroup.get('propertyType')?.touched && detailsGroup.get('propertyType')?.hasError('required')">
-            Please select a property type.
-          </div>
 
           <h2 class="subsection-title move-down">Property Location</h2>
           <div formGroupName="address">
-
             <div class="property-type-grid" style="margin-top: 16px; grid-template-columns: 1fr 1fr ;">
               <div class="input-group">
                 <label class="input-label">Street Address</label>
                 <input type="text" formControlName="street" placeholder="e.g. 123 Main St">
-                <div class="error-msg"
-                  *ngIf="detailsGroup.get('address.street')?.touched && detailsGroup.get('address.street')?.hasError('required')">
-                  Street address is required.
-                </div>
               </div>
               <div class="input-group">
                 <label class="input-label">Landmark</label>
-                <input type="text" formControlName="landmark" placeholder="e.g. 123 Main St">
-                <div class="error-msg"
-                  *ngIf="detailsGroup.get('address.landmark')?.touched && detailsGroup.get('address.landmark')?.hasError('required')">
-                  Landmark is required.
-                </div>
+                <input type="text" formControlName="landmark" placeholder="Near City Mall">
               </div>
-
             </div>
-
             <div class="property-type-grid" style="margin-top: 16px; grid-template-columns: 2fr 1fr 1fr;">
-
               <div class="input-group" style="margin-top:0;">
                 <label class="input-label">State</label>
                 <select formControlName="state">
                   <option value="">Select State</option>
-                  <option *ngFor="let state of states" [value]="state.name">
-                    {{ state.name }}
-                  </option>
+                  <option *ngFor="let state of states" [value]="state.name">{{ state.name }}</option>
                 </select>
-                <div class="error-msg"
-                  *ngIf="detailsGroup.get('address.state')?.touched && detailsGroup.get('address.state')?.hasError('required')">
-                  Required.
-                </div>
               </div>
               <div class="input-group" style="margin-top:0;">
                 <label class="input-label">City</label>
                 <select formControlName="city">
                   <option value="">Select City</option>
-                  <option *ngFor="let city of cities" [value]="city.name">
-                    {{ city.name }}
-                  </option>
+                  <option *ngFor="let city of cities" [value]="city.name">{{ city.name }}</option>
                 </select>
-                <div class="error-msg"
-                  *ngIf="detailsGroup.get('address.city')?.touched && detailsGroup.get('address.city')?.hasError('required')">
-                  Required.
-                </div>
               </div>
-
-
-
               <div class="input-group" style="margin-top:0;">
                 <label class="input-label">Zip Code</label>
                 <input type="text" formControlName="zip" placeholder="400001">
               </div>
-
             </div>
           </div>
 
-          <h2 class="subsection-title move-down">Accommodation Details</h2>
-
+          <h2 class="subsection-title move-down">Accommodation</h2>
           <div class="counter-row">
             <div class="counter-label">
               <div class="label-main">Bedrooms</div>
-              <div class="label-sub">Total number of bedrooms</div>
             </div>
             <div class="counter-controls">
-              <button type="button" class="counter-btn" (click)="updateCounter('bedrooms', -1)"
-                [disabled]="detailsGroup.get('bedrooms')?.value <= 0">-</button>
+              <button type="button" class="counter-btn" (click)="updateCounter('bedrooms', -1)">-</button>
               <span class="counter-value">{{ detailsGroup.get('bedrooms')?.value }}</span>
               <button type="button" class="counter-btn" (click)="updateCounter('bedrooms', 1)">+</button>
             </div>
           </div>
-
           <div class="counter-row">
             <div class="counter-label">
               <div class="label-main">Bathrooms</div>
-              <div class="label-sub">Total full and half baths</div>
             </div>
             <div class="counter-controls">
-              <button type="button" class="counter-btn" (click)="updateCounter('bathrooms', -1)"
-                [disabled]="detailsGroup.get('bathrooms')?.value <= 0">-</button>
+              <button type="button" class="counter-btn" (click)="updateCounter('bathrooms', -1)">-</button>
               <span class="counter-value">{{ detailsGroup.get('bathrooms')?.value }}</span>
               <button type="button" class="counter-btn" (click)="updateCounter('bathrooms', 1)">+</button>
             </div>
           </div>
-
           <div class="input-group">
-            <label class="input-label">Property Size</label>
-            <div class="suffix-input-wrapper">
-              <input type="number" formControlName="propertySize" placeholder="e.g. 1200">
-              <span class="suffix">sq ft</span>
-            </div>
-            <div class="error-msg"
-              *ngIf="detailsGroup.get('propertySize')?.touched && detailsGroup.get('propertySize')?.hasError('required')">
-              Required.
-            </div>
+            <label class="input-label">Size (Sq Ft)</label>
+            <input type="number" formControlName="propertySize">
           </div>
         </div>
 
 
         <div *ngIf="currentStep === 2" formGroupName="amenities">
           <h1 class="section-title">Amenities & Features</h1>
-          <p class="section-subtitle">Tell tenants what makes your property special and unique.</p>
-
           <ng-container *ngFor="let group of amenityGroups">
-            <h2 class="subsection-title icon-title">
-              <mat-icon *ngIf="group.title === 'Essentials'">wifi</mat-icon>
-              <mat-icon *ngIf="group.title === 'Features'">pool</mat-icon>
-              <mat-icon *ngIf="group.title === 'Safety'">security</mat-icon>
-              {{ group.title }}
-            </h2>
+            <h2 class="subsection-title icon-title">{{ group.title }}</h2>
             <div class="amenities-grid">
               <label class="amenity-card" *ngFor="let item of group.items"
                 [class.selected]="amenitiesGroup.get(item.formControlName)?.value === true">
                 <input type="checkbox" [formControlName]="item.formControlName" hidden>
-                <div class="custom-checkbox">
-                  <mat-icon *ngIf="amenitiesGroup.get(item.formControlName)?.value">check</mat-icon>
-                </div>
+                <div class="custom-checkbox"><mat-icon
+                    *ngIf="amenitiesGroup.get(item.formControlName)?.value">check</mat-icon></div>
                 <span class="amenity-label">{{ item.label }}</span>
               </label>
             </div>
@@ -173,44 +121,77 @@
         </div>
 
 
-        <div *ngIf="currentStep === 3" formGroupName="final">
-          <div class="two-column-layout">
+        <div *ngIf="currentStep === 3" formGroupName="guidebook">
+          <h1 class="section-title">Rules & Surroundings</h1>
+          <p class="section-subtitle">Set clear expectations and highlight the neighborhood.</p>
 
+          <h2 class="subsection-title">House Rules</h2>
+          <div class="rules-chips-container">
+            <div class="rule-chip" *ngFor="let rule of commonRules" [class.active]="isRuleSelected(rule.value)"
+              (click)="toggleRule(rule.value)">
+              <mat-icon>{{rule.icon}}</mat-icon>
+              <span>{{rule.label}}</span>
+            </div>
+          </div>
+
+          <div class="input-group" style="margin-top: 16px;">
+            <label class="input-label">Additional Rules / Notes</label>
+            <textarea formControlName="customRules" rows="3"
+              placeholder="E.g., Please take out the trash on Tuesdays..."></textarea>
+          </div>
+
+          <div class="divider-line"></div>
+
+          <h2 class="subsection-title">What's Nearby?</h2>
+          <p class="input-helper">Help tenants know the area. Add metro stations, parks, or malls.</p>
+
+          <div formArrayName="nearby">
+            <div class="nearby-row" *ngFor="let place of nearbyPlaces.controls; let i = index" [formGroupName]="i">
+
+              <div class="nearby-icon-box">
+                <mat-icon>place</mat-icon>
+              </div>
+
+              <div class="input-col-main">
+                <input type="text" formControlName="name" placeholder="Place Name (e.g. Central Park)">
+              </div>
+
+              <div class="input-col-side">
+                <input type="text" formControlName="distance" placeholder="Dist (e.g. 5 min walk)">
+              </div>
+
+              <button type="button" class="btn-icon-danger" (click)="removeNearbyPlace(i)"
+                *ngIf="nearbyPlaces.length > 1">
+                <mat-icon>delete_outline</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" class="btn-dashed" (click)="addNearbyPlace()">
+            <mat-icon>add</mat-icon> Add Another Place
+          </button>
+        </div>
+
+
+        <div *ngIf="currentStep === 4" formGroupName="final">
+          <div class="two-column-layout">
             <div class="main-column">
               <h1 class="section-title">Final Details</h1>
               <p class="section-subtitle">Add photos and a description to finish your listing.</p>
+
               <div class="input-group">
-                <label class="input-label">Property Name</label>
-                
-                <input type="text" formControlName="name" 
-                  placeholder="This cozy 2-bedroom apartment features..." />
-                <div class="error-msg"
-                  *ngIf="finalGroup.get('name')?.touched && finalGroup.get('name')?.hasError('required')">
-                  Name is required.
-                </div>
-              </div>
-              <div class="input-group">
-                <label class="input-label">Property Description</label>
-                <p class="input-helper">Mention the vibe of the neighborhood, nearby transit, or unique interior
-                  details.</p>
-                <textarea formControlName="description" rows="3"
-                  placeholder="This cozy 2-bedroom apartment features..."></textarea>
-                <div class="error-msg"
-                  *ngIf="finalGroup.get('description')?.touched && finalGroup.get('description')?.hasError('required')">
-                  Description is required.
-                </div>
+                <label class="input-label">Property Title</label>
+                <input type="text" formControlName="name" placeholder="Cozy 2-bedroom apartment...">
               </div>
 
               <div class="input-group">
-                <label class="input-label">Monthly Rent</label>
-                <div class="prefix-input-wrapper">
-                  <span class="prefix">₹</span>
-                  <input type="number" formControlName="rentAmount" placeholder="e.g. 2400">
-                </div>
-                <div class="error-msg"
-                  *ngIf="finalGroup.get('rentAmount')?.touched && finalGroup.get('rentAmount')?.hasError('required')">
-                  Rent amount is required.
-                </div>
+                <label class="input-label">Description</label>
+                <textarea formControlName="description" rows="4"></textarea>
+              </div>
+
+              <div class="input-group">
+                <label class="input-label">Monthly Rent (₹)</label>
+                <input type="number" formControlName="rentAmount">
               </div>
 
               <h2 class="subsection-title">Photos</h2>
@@ -218,23 +199,13 @@
                 <button type="button" class="btn-outline" (click)="fileInput.click()">
                   <mat-icon>cloud_upload</mat-icon> Upload Photos
                 </button>
-
                 <input #fileInput type="file" multiple accept="image/*" (change)="onFileSelected($event)" hidden>
 
-                <p class="input-helper" style="margin-top: 8px;">
-                  Supported formats: JPG, PNG. Max 5MB each.
-                </p>
-
                 <div class="image-previews" *ngIf="imagePreviews.length > 0">
-
                   <div class="preview-item" *ngFor="let img of imagePreviews; let i = index">
-                    <img [src]="img" alt="Upload Preview">
-
-                    <button type="button" class="remove-img-btn" (click)="removeImage(i)" title="Remove Photo">
-                      <mat-icon
-                        style="font-size: 16px; width: 16px; height: 16px; display:flex; align-items:center; justify-content:center;">close</mat-icon>
-                    </button>
-
+                    <img [src]="img">
+                    <button type="button" class="remove-img-btn"
+                      (click)="removeImage(i)"><mat-icon>close</mat-icon></button>
                     <div class="cover-tag" *ngIf="i === 0">Cover</div>
                   </div>
                 </div>
@@ -244,35 +215,13 @@
             <div class="sidebar-column">
               <div class="preview-card">
                 <div class="preview-image-container">
-                  <img [src]="imagePreviews.length > 0 ? imagePreviews[0] : 'assets/placeholder-house.jpg'"
-                    alt="Property Preview">
+                  <img [src]="imagePreviews.length > 0 ? imagePreviews[0] : 'assets/placeholder-house.jpg'">
                   <span class="preview-badge">Preview</span>
                 </div>
                 <div class="preview-content">
-                  <h3>{{ detailsGroup.get('bedrooms')?.value }}-Bed {{ detailsGroup.get('propertyType')?.value |
+                  <h3>{{ detailsGroup.get('bedrooms')?.value }} Bed {{ detailsGroup.get('propertyType')?.value |
                     titlecase }}</h3>
-
-                  <p style="color:#6b7280; font-size:0.9rem; margin:4px 0 12px;">
-                    {{ detailsGroup.get('address.city')?.value || 'City' }},
-                    {{ detailsGroup.get('address.state')?.value || 'State' }}
-                  </p>
-
                   <div class="preview-price">₹{{ finalGroup.get('rentAmount')?.value || 0 }}/mo</div>
-
-                  <div class="preview-meta">
-                    <span><mat-icon>bed</mat-icon> {{ detailsGroup.get('bedrooms')?.value }}</span>
-                    <span><mat-icon>bathtub</mat-icon> {{ detailsGroup.get('bathrooms')?.value }}</span>
-                    <span><mat-icon>square_foot</mat-icon> {{ detailsGroup.get('propertySize')?.value || 0 }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="pro-tip-box">
-                <div class="tip-icon"><mat-icon>lightbulb</mat-icon></div>
-                <div>
-                  <strong>Pro Tip</strong>
-                  <p style="margin:4px 0 0; font-size:0.9rem; color:#4b5563;">Detailed descriptions get 20% more
-                    inquiries. Be specific about nearby attractions!</p>
                 </div>
               </div>
             </div>
@@ -281,18 +230,18 @@
 
       </form>
     </div>
+
     <footer class="footer-actions">
       <button type="button" class="btn-ghost" (click)="prevStep()"
-        [style.visibility]="currentStep === 1 ? 'hidden' : 'visible'">
-        Back
-      </button>
+        [style.visibility]="currentStep === 1 ? 'hidden' : 'visible'">Back</button>
+      <button type="button" class="btn-primary" (click)="nextStep()" *ngIf="currentStep < totalSteps">Next Step</button>
+      <button type="button" class="btn-primary" (click)="onSubmit()" *ngIf="currentStep === totalSteps"
+        [disabled]="isSubmitting" [class.disabled-btn]="isSubmitting">
 
-      <button type="button" class="btn-primary" (click)="nextStep()" *ngIf="currentStep < totalSteps">
-        Next Step
-      </button>
+        <mat-icon *ngIf="!isSubmitting">check_circle</mat-icon>
+        <mat-icon *ngIf="isSubmitting" class="spinner">sync</mat-icon>
 
-      <button type="button" class="btn-primary" (click)="onSubmit()" *ngIf="currentStep === totalSteps">
-        Finish Listing
+        {{ isSubmitting ? 'Saving...' : 'Finish Listing' }}
       </button>
     </footer>
 

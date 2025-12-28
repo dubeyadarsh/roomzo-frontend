@@ -1,0 +1,66 @@
+<div class="page-container">
+  
+  <header class="dashboard-header">
+    <div>
+      <h1>My Properties</h1>
+      <p>Manage your listings and check their status.</p>
+    </div>
+    <button class="btn-primary" routerLink="/list">
+      <mat-icon>add</mat-icon> Add New
+    </button>
+  </header>
+
+  <div class="loading-state" *ngIf="isLoading">
+    <mat-icon class="spinner">sync</mat-icon> Loading your portfolio...
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && listings.length === 0">
+    <img src="assets/no-data.svg" alt="No Properties" style="width: 150px; opacity: 0.5; margin-bottom: 20px;">
+    <h3>No properties listed yet</h3>
+    <p>Get started by listing your first property today.</p>
+    <button class="btn-outline" routerLink="/list">List Your Property</button>
+  </div>
+
+  <div class="listings-grid" *ngIf="!isLoading && listings.length > 0">
+    
+    <div class="property-card" *ngFor="let prop of listings">
+      
+      <div class="card-image">
+        <img [src]="(prop.photos && prop.photos.length > 0) ? prop.photos[0].photoUrl : 'assets/placeholder.jpg'" alt="Home">
+        
+        <div class="status-badge" [ngClass]="prop.isRented ? 'rented' : 'available'">
+          <span class="dot"></span> {{ prop.isRented ? 'Rented' : 'Active' }}
+        </div>
+      </div>
+
+      <div class="card-content">
+        <div class="header-row">
+          <h3>{{ prop.propertyName || prop.propertyType }}</h3>
+          <span class="price">{{ formatPrice(prop.rentAmount) }}</span>
+        </div>
+        
+        <p class="location">
+          <mat-icon>location_on</mat-icon> {{ prop.city }}, {{ prop.state }}
+        </p>
+
+        <div class="stats-row">
+          <span>{{ prop.bedrooms }} Bed</span>
+          <span class="divider">•</span>
+          <span>{{ prop.propertySize }} Sq Ft</span>
+          <span class="divider">•</span>
+          <span>{{ prop.propertyType }}</span>
+        </div>
+
+        <div class="action-row">
+          <a [routerLink]="['/property-details', prop.id]" class="view-link">View Live</a>
+          
+          <button class="btn-edit" (click)="editProperty(prop.id)">
+            <mat-icon>edit</mat-icon> Edit
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>

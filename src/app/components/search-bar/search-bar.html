@@ -1,4 +1,17 @@
-<form class="rz-search" (submit)="submit($event)">
-  <input type="search" [(ngModel)]="query" name="q" placeholder="Search city, locality or project" aria-label="Search">
+<form class="rz-search" (submit)="search()">
+  <input type="search" 
+         [formControl]="searchControl" 
+         [matAutocomplete]="auto" 
+         placeholder="Search city, locality or project" 
+         aria-label="Search">
+  
+  <mat-autocomplete #auto="matAutocomplete" 
+                    [displayWith]="displayCity" 
+                    (optionSelected)="onCitySelected($event)">
+    <mat-option *ngFor="let city of filteredCities" [value]="city">
+       {{ city.name }}, {{ city.stateCode }}
+    </mat-option>
+  </mat-autocomplete>
+
   <button type="submit">Search</button>
 </form>

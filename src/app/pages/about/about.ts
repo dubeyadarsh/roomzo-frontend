@@ -26,17 +26,17 @@ export class AboutComponent {
     { 
       icon: 'visibility', 
       title: 'Transparency', 
-      desc: 'No hidden fees, no surprises. We believe in clear, open communication at every step of your journey.' 
+      desc: 'No brokers. No hidden fees. Clear information and honest listings, always..' 
     },
     { 
       icon: 'verified_user', 
       title: 'Integrity', 
-      desc: 'Honest dealings are the foundation of our business. We put your interests first, always.' 
+      desc: 'Trust comes first. We stay fair, ethical, and user-focused in every decision.' 
     },
     { 
       icon: 'lightbulb', 
       title: 'Innovation', 
-      desc: 'Using modern technology to smooth the process, from virtual tours to digital paperwork.' 
+      desc: 'Smart technology for simple renting. Modern tools designed for speed, comfort, and ease.' 
     }
   ];
 

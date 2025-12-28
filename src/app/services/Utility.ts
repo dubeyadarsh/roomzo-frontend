@@ -45,14 +45,14 @@
   }
   export function getAmenitiesMap() {
     return [
-      { key: 'wifi', label: 'Fast Wifi', icon: 'wifi' },
-      { key: 'ac', label: 'Air Conditioning', icon: 'ac_unit' },
-      { key: 'heating', label: 'Heating', icon: 'thermostat' },
-      { key: 'parking', label: 'Free Parking', icon: 'local_parking' },
-      { key: 'gym', label: 'Gym Access', icon: 'fitness_center' },
-      { key: 'balcony', label: 'Private Balcony', icon: 'balcony' },
-      { key: 'washerDryer', label: 'Washer & Dryer', icon: 'local_laundry_service' },
-      { key: 'pets', label: 'Pet Friendly', icon: 'pets' },
-      { key: 'smokeAlarm', label: 'Smoke Alarm', icon: 'detector_smoke' }
+      { key: 'wifi', label: 'Fast Wifi', icon: 'wifi' ,dbKey:'hasWifi'},
+      { key: 'ac', label: 'Air Conditioning', icon: 'ac_unit', dbKey:'hasAc' },
+      { key: 'heating', label: 'Heating', icon: 'thermostat', dbKey:'hasHeating' },
+      { key: 'parking', label: 'Free Parking', icon: 'local_parking', dbKey:'hasParking' },
+      { key: 'gym', label: 'Gym Access', icon: 'fitness_center', dbKey:'hasGym' },
+      { key: 'balcony', label: 'Private Balcony', icon: 'balcony', dbKey:'hasBalcony' },
+      { key: 'washerDryer', label: 'Washer & Dryer', icon: 'local_laundry_service', dbKey:'hasWasherDryer' },
+      { key: 'pets', label: 'Pet Friendly', icon: 'pets', dbKey:'hasPets' },
+      { key: 'smokeAlarm', label: 'Smoke Alarm', icon: 'detector_smoke', dbKey:'hasSmokeAlarm' }
     ];
   }

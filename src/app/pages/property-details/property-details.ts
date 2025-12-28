@@ -1,20 +1,26 @@
-import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Added Router
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { PropertyService } from '../../services/property.service';
 import { Subscription, switchMap, tap } from 'rxjs';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-
-// 1. Import Toastr
 import { ToastrService } from 'ngx-toastr';
 import { getAmenitiesMap } from '../../services/Utility';
+
+// Import Swiper register function
+import { register } from 'swiper/element/bundle';
+import { AuthService } from '../../services/auth.service';
+
+// Register Swiper custom elements immediately
+register();
 
 @Component({
   selector: 'app-property-details',
   standalone: true,
   imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './property-details.html',
   styleUrls: ['./property-details.css']
 })
@@ -29,14 +35,24 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   mapUrl: SafeResourceUrl | null = null; 
   isCopied = false;
 
+  // --- NEW: Modal State ---
+  showContactModal = false;
+  ownerDetails = {
+    name: 'Property Owner', // Default
+    phone: '+91 98XXX XXXXX',
+    email: 'hidden@roomzo.com'
+  };
+
   private routeSub: Subscription | null = null;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router, // Injected Router
     private propertyService: PropertyService,
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
-    private toastr: ToastrService // 2. Inject Toastr
+    private toastr: ToastrService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -46,13 +62,14 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
         this.property = undefined;
         this.similarProperties = [];
         this.mapUrl = null; 
+        this.showContactModal = false; // Reset modal on nav
         window.scrollTo(0, 0);
         this.cd.detectChanges();
       }),
       switchMap(params => {
         this.currentId = params.get('id');
         if (!this.currentId) {
-            this.toastr.error('Invalid Property ID', 'Error'); // Toast for bad URL
+            this.toastr.error('Invalid Property ID', 'Error');
             throw new Error('No ID');
         }
         
@@ -65,6 +82,9 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
           this.property = response.data;
           this.mapAmenities(this.property);
           this.loadMapCoordinates(this.property.city, this.property.state);
+          
+          // --- NEW: Check if we returned from Login to open popup ---
+          this.checkReturnFromLogin();
         } else {
             this.toastr.warning('Property data not found', 'Not Found');
         }
@@ -73,14 +93,89 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error:', err);
-        this.toastr.error('Failed to load property details. Please try again.', 'Server Error');
+        this.toastr.error('Failed to load property details.', 'Server Error');
         this.isLoading = false;
         this.cd.detectChanges();
       }
     });
   }
 
-  // --- Map Logic with Error Toast ---
+  // --- NEW: Auth Logic & Popup Trigger ---
+  contactAgent() {
+    if (this.isUserLoggedIn()) {
+      this.openContactModal();
+    } else {
+      // Redirect to Login with return URL that includes '?showContact=true'
+      // This ensures the popup opens automatically after they verify OTP
+      const returnUrl = `/property-details/${this.currentId}?showContact=true`;
+      this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl } });
+    }
+  }
+
+  isUserLoggedIn(): boolean {
+    const isVerified = localStorage.getItem('ownerVerifiedwWIthOtp');
+    const loginTime = localStorage.getItem('loginTimestamp');
+    const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
+
+    if (isVerified === 'true' && loginTime) {
+      const timeElapsed = Date.now() - parseInt(loginTime, 10);
+      return timeElapsed < TEN_DAYS;
+    }
+    return false;
+  }
+
+  checkReturnFromLogin() {
+    // Check query params for 'showContact'
+    const params = this.route.snapshot.queryParams;
+    if (params['showContact'] === 'true' && this.isUserLoggedIn()) {
+      this.openContactModal();
+      
+      // Clear the query param so refresh doesn't keep opening it
+      this.router.navigate([], {
+        relativeTo: this.route,
+        queryParams: { showContact: null },
+        queryParamsHandling: 'merge',
+        replaceUrl: true
+      });
+    }
+  }
+
+  openContactModal() {
+    // Check if property has ownerId
+    if (!this.property || !this.property.ownerId) {
+       this.toastr.error('Owner information not available');
+       return;
+    }
+
+    this.isLoading = true; // Optional: Show spinner inside modal if you want
+
+    this.authService.getOwnerDetails(this.property.ownerId).subscribe({
+      next: (res: any) => {
+        this.isLoading = false;
+        if (res.status === 1 && res.data) {
+          this.ownerDetails = {
+            name: res.data.name,
+            phone: res.data.phone,
+            email: res.data.email
+          };
+          this.showContactModal = true;
+          this.cd.detectChanges();
+        } else {
+          this.toastr.error('Could not fetch owner details');
+        }
+      },
+      error: () => {
+        this.isLoading = false;
+        this.toastr.error('Failed to load contact info');
+      }
+    });
+  }
+
+  closeContactModal() {
+    this.showContactModal = false;
+  }
+  // ---------------------------------------
+
   loadMapCoordinates(city: string, state: string) {
     this.propertyService.getGeocode(city, state).subscribe({
       next: (results: any[]) => {
@@ -94,89 +189,58 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
           
           this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
           this.cd.detectChanges();
-        } else {
-            // If map fails, just log it, don't annoy user with a toast unless crucial
-            console.warn('Could not geocode location for map.');
         }
       },
       error: () => this.toastr.warning('Could not load map location', 'Map Error')
     });
   }
 
-  // --- Share Logic with Success Toast ---
   shareProperty() {
     const currentUrl = window.location.href;
     navigator.clipboard.writeText(currentUrl).then(() => {
       this.isCopied = true;
-      this.toastr.success('Link copied to clipboard!', 'Shared'); // Success Toast
-      
+      this.toastr.success('Link copied to clipboard!', 'Shared');
       setTimeout(() => {
         this.isCopied = false;
         this.cd.detectChanges();
       }, 2000);
-      
       this.cd.detectChanges();
     }).catch(() => {
       this.toastr.error('Failed to copy link', 'Error');
     });
   }
 
-  // --- Placeholder Actions (Mock Interactions) ---
-  saveProperty() {
-    // Logic to save to Favorites (Mock)
-    this.toastr.success('Property saved to your favorites', 'Saved');
-  }
+  saveProperty() { this.toastr.success('Property saved to your favorites', 'Saved'); }
+  requestBooking() { this.contactAgent(); } // Redirect booking to contact as well
+  scheduleTour() { this.toastr.info('Tour scheduling feature coming soon!', 'Coming Soon'); }
 
-  requestBooking() {
-    this.toastr.info('Booking request sent to agent!', 'Request Sent');
-  }
-
-  scheduleTour() {
-    this.toastr.info('Tour scheduling feature coming soon!', 'Coming Soon');
-  }
-
-  contactAgent() {
-    this.toastr.success('Agent has been notified. They will contact you shortly.', 'Contacted');
-  }
-
-  // --- Rest of Logic ---
   ngOnDestroy(): void {
     if (this.routeSub) this.routeSub.unsubscribe();
   }
   
   loadSuggestions(currentId: string) {
     const storedLocation = localStorage.getItem('user_location');
-    let apiCall;
-
-    if (storedLocation) {
-        const loc = JSON.parse(storedLocation);
-        apiCall = this.propertyService.searchListingsWithFilters(loc.state, loc.city, 0, 4, undefined, false);
-    } else {
-        apiCall = this.propertyService.getAllListingsWithFilters(0, 4, undefined, false);
-    }
+    let apiCall = storedLocation 
+        ? this.propertyService.searchListingsWithFilters(JSON.parse(storedLocation).state, JSON.parse(storedLocation).city, 0, 4, undefined, false)
+        : this.propertyService.getAllListingsWithFilters(0, 4, undefined, false);
 
     apiCall.subscribe({
         next: (res: any) => {
             if (res.listings) {
                 let filtered = res.listings.filter((p: any) => String(p.id) !== String(currentId));
-                if (filtered.length > 3) {
-                   filtered.splice(Math.floor(Math.random() * filtered.length), 1);
-                }
+                if (filtered.length > 3) filtered.splice(Math.floor(Math.random() * filtered.length), 1);
                 this.similarProperties = filtered;
                 this.cd.detectChanges();
             }
         },
-        error: () => {
-            // Silent fail for suggestions is usually better than an error popup
-            console.warn('Failed to load similar properties'); 
-        }
+        error: () => console.warn('Failed to load similar properties')
     });
   }
 
   mapAmenities(propData: any) {
     if (!propData) return;
     const config = getAmenitiesMap();
-    this.displayAmenities = config.filter(c => propData[c.key] === true);
+    this.displayAmenities = config.filter(c => propData[c.dbKey] === true);
   }
 
   formatPrice(price: number): string {

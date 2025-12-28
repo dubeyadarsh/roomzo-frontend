@@ -4,3 +4,7 @@
 @media (max-width:900px) {
   .rz-search input { min-width:120px; }
 }
+
+@media (max-width:600px) {
+  .rz-search { display: none; }
+}

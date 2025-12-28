@@ -33,7 +33,7 @@ h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px 0; }
 .btn-outline:hover { background: #f9fafb; border-color: #d1d5db; }
 
 /* --- 2. Gallery (Mosaic Grid) --- */
-.gallery-section { margin-top: 24px; border-radius: 16px; overflow: hidden; height: 450px; }
+/* .gallery-section { margin-top: 24px; border-radius: 16px; overflow: hidden; height: 450px; } */
 .gallery-grid {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -188,3 +188,290 @@ h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px 0; }
 .status-tag.rented {
   background-color: #64748b; /* Tailwind Slate 500 */
 }
+.guidebook-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.subtitle {
+  color: #717171;
+  font-size: 14px;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+/* Rules List */
+.rules-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 Column layout for rules */
+  gap: 12px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #484848;
+
+    .rule-icon {
+      color: #717171;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+/* Custom Note Box */
+.custom-note {
+  background-color: #f7f7f7;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  gap: 12px;
+  
+  mat-icon {
+    color: #FF5A5F; /* Brand accent color */
+    transform: rotate(180deg); /* Stylistic quote choice */
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #484848;
+    font-style: italic;
+  }
+}
+
+/* Nearby Places Grid */
+.nearby-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.nearby-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px;
+  border: 1px solid #dddddd;
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+
+  .place-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f1f1f1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    mat-icon {
+      color: #222;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .place-details {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .place-header {
+    display: flex;
+    flex-direction: column;
+    
+    .place-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: #222;
+    }
+    
+    .place-type {
+      font-size: 12px;
+      color: #717171;
+    }
+  }
+
+  .place-dist {
+    font-weight: 500;
+    font-size: 14px;
+    color: #484848;
+    background: #f7f7f7;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+}
+
+/* Responsive adjust for mobile */
+@media (max-width: 768px) {
+  .rules-list {
+    grid-template-columns: 1fr; /* Single column on mobile */
+  }
+}
+@media (max-width: 900px) {
+  .desktop-only { display: none !important; }
+  .mobile-only { display: block !important; }
+
+  /* Reset padding so carousel touches edges */
+  .page-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* --- SWIPER CAROUSEL FIXED HEIGHT --- */
+  swiper-container {
+    width: 100%;
+    height: 300px; /* Forces the carousel to be visible */
+    background-color: #000;
+  }
+
+  swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Add padding back to text content */
+  .property-header, .content-layout, .specs-bar, .info-block {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (min-width: 900px) {
+.gallery-section { margin-top: 24px; border-radius: 16px; overflow: hidden; height: 450px; }
+
+}
+
+/* ... Existing Desktop Styles ... */
+
+/* Mobile Fix for Specs Bar */
+@media (max-width: 600px) {
+  .specs-bar {
+    display: grid;               /* Switch from Flex to Grid */
+    grid-template-columns: 1fr 1fr; /* Create 2 equal columns */
+    gap: 16px;                   /* Reduce gap from 32px to 16px */
+    padding: 16px 20px;          /* Ensure padding matches page sides */
+    margin-bottom: 24px;
+  }
+
+  .spec-item {
+    font-size: 13px;             /* Slightly smaller text for mobile */
+    white-space: nowrap;         /* Prevent text wrapping inside the item */
+  }
+  
+  .spec-item mat-icon {
+    font-size: 20px;             /* Resize icon slightly */
+    width: 20px;
+    height: 20px;
+  }
+}
+/* ... (Existing CSS) ... */
+
+/* === MODAL STYLES === */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 { margin: 0; font-size: 18px; color: #111; }
+
+.close-btn {
+  background: none; border: none; cursor: pointer; color: #666;
+  display: flex; align-items: center; padding: 4px;
+}
+.close-btn:hover { color: #000; background: #f5f5f5; border-radius: 50%; }
+
+.modal-body { padding: 24px; }
+
+.owner-profile {
+  text-align: center; margin-bottom: 24px;
+}
+
+.avatar-large {
+  width: 64px; height: 64px;
+  background: #1e3a8a; color: white;
+  font-size: 28px; font-weight: bold;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.verified-badge {
+  color: #059669; /* Green */
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  margin-top: 4px;
+}
+.verified-badge mat-icon { font-size: 16px; width: 16px; height: 16px; }
+
+.contact-info {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.info-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 16px;
+}
+.info-row:last-child { margin-bottom: 0; }
+.info-row mat-icon { color: #6b7280; }
+
+.info-row label { display: block; font-size: 12px; color: #6b7280; margin-bottom: 2px; }
+.contact-link {
+  font-size: 16px; font-weight: 600; color: #1e3a8a; text-decoration: none;
+}
+.contact-link:hover { text-decoration: underline; }
+
+.modal-actions {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.full-width { width: 100%; justify-content: center; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
