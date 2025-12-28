@@ -5,16 +5,16 @@ import { environment } from '../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = environment.apiUrl + "/api/auth";
+  private baseUrl = environment.apiUrl ;
 
   constructor(private http: HttpClient) {}
 
   sendOtp(mobileNumber: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/send-otp`, { phone:mobileNumber });
+    return this.http.post(`${this.baseUrl}/api/auth/send-otp`, { phone:mobileNumber });
   }
 
   verifyOtp(mobileNumber: string, otp: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/verify-otp`, { phone:mobileNumber, otp:otp });
+    return this.http.post(`${this.baseUrl}/api/auth/verify-otp`, { phone:mobileNumber, otp:otp });
   }
 
   // Helper to save session
@@ -26,5 +26,13 @@ export class AuthService {
   }
   getOwnerDetails(ownerId: number): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/auth/owner-info/${ownerId}`);
+  }
+  loginWithFirebase(token: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/auth/login`, { token });
+  }
+  // --- Contact Us Form ---
+  sendContactForm(data: any): Observable<any> {
+    // Matches Backend: @PostMapping("/api/contact/send")
+    return this.http.post(`${this.baseUrl}/api/contact/send`, data);
   }
 }

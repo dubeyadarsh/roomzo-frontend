@@ -1,4 +1,4 @@
-import { Component,ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -15,8 +15,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class LoginComponent {
   
-  step: 'MOBILE' | 'OTP' = 'MOBILE';
-  mobileNumber: string = '';
+  step: 'EMAIL' | 'OTP' = 'EMAIL'; // Changed step name
+  email: string = '';              // Changed from mobileNumber
   otp: string = '';
   isLoading = false;
   returnUrl: string = '/list';
@@ -26,60 +26,69 @@ export class LoginComponent {
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
-    private cd: ChangeDetectorRef // 2. Inject it
+    private cd: ChangeDetectorRef
   ) {
-    // Capture where the user wanted to go
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/list';
   }
 
   onSendOtp() {
-    if (!this.mobileNumber || this.mobileNumber.length < 10) {
-      this.toastr.warning('Please enter a valid mobile number');
+    // Basic Email Validation
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    
+    if (!this.email || !emailPattern.test(this.email)) {
+      this.toastr.warning('Please enter a valid email address');
       return;
     }
 
     this.isLoading = true;
-    this.authService.sendOtp(this.mobileNumber).subscribe({
+    
+    // Call Service with Email
+    this.authService.sendOtp(this.email).subscribe({
       next: (res) => {
         this.isLoading = false;
         if (res.status === 1) {
           this.step = 'OTP';
-                    this.cd.detectChanges();
-          this.toastr.success(`OTP sent to ${this.mobileNumber}`, 'Sent!');
-          // Check your Backend Console for the OTP!
+          this.cd.detectChanges();
+          this.toastr.success(`OTP sent to ${this.email}`, 'Sent!');
+        } else {
+            this.toastr.error(res.message || 'Failed to send OTP');
         }
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
-        this.toastr.error('Failed to send OTP. Try again.');
+        console.error(err);
+        this.toastr.error('Failed to connect to server.');
       }
     });
   }
 
   onVerifyOtp() {
     if (!this.otp || this.otp.length < 4) {
-      this.toastr.warning('Please enter the 4-digit OTP');
+      this.toastr.warning('Please enter the valid OTP');
       return;
     }
 
     this.isLoading = true;
-    this.authService.verifyOtp(this.mobileNumber, this.otp).subscribe({
+    
+    // Verify using Email + OTP
+    this.authService.verifyOtp(this.email, this.otp).subscribe({
       next: (res) => {
         this.isLoading = false;
         if (res.status === 1) {
-          // Save Session for 10 Days
-          console.log('OTP Verified. Logging in user.',res);
-          this.authService.saveSession(this.mobileNumber,res.data.user);
+          console.log('Login Success:', res);
+          
+          // Save Session (Updated to store email)
+          this.authService.saveSession(this.email, res.data.user);
           
           this.toastr.success('Login Successful', 'Welcome');
           this.router.navigateByUrl(this.returnUrl);
         } else {
-          this.toastr.error('Invalid OTP', 'Error');
+          this.toastr.error('Invalid OTP. Please try again.', 'Error');
         }
       },
       error: () => {
         this.isLoading = false;
-        this.toastr.error('Verification failed');
+        this.toastr.error('Verification failed. Server error.');
       }
     });
   }
