@@ -29,7 +29,7 @@
           <button class="reset-btn" (click)="resetFilters()">Reset all</button>
         </div>
 
-        <div class="filter-group">
+        <!-- <div class="filter-group">
           <label>Availability</label>
           <div class="checkbox-list">
             
@@ -44,7 +44,7 @@
             </label>
 
           </div>
-        </div>
+        </div> -->
 
         <div class="filter-group">
           <label>Max Price: {{ filters.maxPrice | currency:'INR' }}</label>
@@ -59,21 +59,21 @@
               <span class="checkmark"></span> Any
             </label>
             <label class="custom-checkbox">
-              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="Apartment" (change)="applyFilters()">
-              <span class="checkmark"></span> Apartment
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="Flat" (change)="applyFilters()">
+              <span class="checkmark"></span> Flat
             </label>
             <label class="custom-checkbox">
-              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="House" (change)="applyFilters()">
-              <span class="checkmark"></span> House
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="PG" (change)="applyFilters()">
+              <span class="checkmark"></span> PG
             </label>
             <label class="custom-checkbox">
-              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="Studio" (change)="applyFilters()">
-              <span class="checkmark"></span> Studio
+              <input type="radio" name="type" [(ngModel)]="filters.propertyType" value="Room" (change)="applyFilters()">
+              <span class="checkmark"></span> Room
             </label>
           </div>
         </div>
 
-        <div class="filter-group">
+        <!-- <div class="filter-group">
           <label>Bedrooms</label>
           <div class="pill-group">
             <button class="pill" [class.active]="filters.bedrooms === 'Any'" (click)="filters.bedrooms = 'Any'; applyFilters()">Any</button>
@@ -81,13 +81,15 @@
             <button class="pill" [class.active]="filters.bedrooms === '2'" (click)="filters.bedrooms = '2'; applyFilters()">2+</button>
             <button class="pill" [class.active]="filters.bedrooms === '3'" (click)="filters.bedrooms = '3'; applyFilters()">3+</button>
           </div>
-        </div>
+        </div> -->
       </aside>
 
       <section class="listings-area">
         
         <div class="results-header">
-          <span>Showing <strong>{{ totalItems }}</strong> properties</span>
+          <!-- <span>Showing <strong>{{ totalItems }}</strong> properties</span> -->
+                    <span>Showing all properties</span>
+
         </div>
 
         <div *ngIf="isLoading" style="padding: 40px; text-align: center; color: #666;">

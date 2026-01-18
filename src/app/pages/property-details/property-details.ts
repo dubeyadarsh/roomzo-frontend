@@ -155,7 +155,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
         if (res.status === 1 && res.data) {
           this.ownerDetails = {
             name: res.data.name,
-            phone: res.data.phone,
+            phone: res.data.phone == null ? this.property.tempContactNo : res.data.phone,
             email: res.data.email
           };
           this.showContactModal = true;

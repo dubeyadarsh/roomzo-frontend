@@ -124,7 +124,7 @@ export class HomeComponent {
   fetchDataUsingLocation(coords: any) {
     console.log(`Calling Backend API with Lat: ${coords.state}, Lng: ${coords.lng}`);
     // this.http.get(...).subscribe(...)
-    this.propertyService.searchListings(coords.state, coords.city, 1, 3).subscribe((response: any) => {
+    this.propertyService.searchListings(coords.state, coords.city, 0, 3).subscribe((response: any) => {
       console.log('Listings with location:', response);
       if (response.listings.length === 0) {
         this.fetchDataWithoutLocation();
@@ -132,7 +132,7 @@ export class HomeComponent {
     });
   }
   fetchDataWithoutLocation() {
-    this.propertyService.getAllListings(1, 3).subscribe(response => {
+    this.propertyService.getAllListings(0, 3).subscribe(response => {
       console.log('Listings without location:', response);
       const mapped = mapBackendListingsToUi(response.listings);
       this.listings = [...this.listings, ...mapped];
@@ -143,8 +143,8 @@ export class HomeComponent {
 
   formatPrice(price: number): string {
     return price >= 10000
-      ? '$' + (price / 1000).toFixed(0) + 'k'
-      : '$' + price.toLocaleString();
+      ? '₹' + (price / 1000).toFixed(0) + 'k'
+      : '₹' + price.toLocaleString();
   }
   viewDetails(id: any): void {
     this.router.navigate(['/property-details', id]);

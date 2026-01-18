@@ -123,3 +123,101 @@
   background: white; border: 1px solid #d1d5db; color: #374151;
   padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
 }
+/* --- Action Row Layout --- */
+.action-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* --- 1. Vibrant Status Dropdown --- */
+.status-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.status-wrapper select {
+    appearance: none; /* Hides default browser arrow */
+    -webkit-appearance: none;
+    padding: 8px 32px 8px 16px; /* Extra right padding for custom arrow */
+    border-radius: 20px; /* Pill shape */
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    /* color: white;  */
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Custom Arrow Icon */
+.select-arrow {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    /* color: white; */
+    font-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+/* --- THE COLOR PALETTE --- */
+
+/* Active: Vibrant Green/Teal */
+.status-active {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+/* Rented: Strong Red/Rose */
+.status-rented {
+    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+}
+
+/* Hidden: Cool Slate/Gray */
+.status-hidden {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+}
+
+/* Focus state */
+.status-wrapper select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+}
+
+/* --- 2. Buttons Styling --- */
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4b5563;
+    background: #f3f4f6;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-icon-text mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+}
+
+.btn-icon-text:hover {
+    background: #e5e7eb;
+    color: #111827 !important;
+}

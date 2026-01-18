@@ -28,15 +28,15 @@ export class ContactComponent {
     { 
       icon: 'email', 
       title: 'Email', 
-      content: 'hello@propertylisting.com', 
+      content: 'support@roomzo.in', 
       sub: '' 
     },
-    { 
-      icon: 'location_on', 
-      title: 'Office', 
-      content: '123 Market Street, Suite 400', 
-      sub: 'Cityville, ST 90210' 
-    }
+    // { 
+    //   icon: 'location_on', 
+    //   title: 'Office', 
+    //   content: '123 Market Street, Suite 400', 
+    //   sub: 'Cityville, ST 90210' 
+    // }
   ];
 
   constructor(private fb: FormBuilder,private router: Router, private toastr: ToastrService, private authService: AuthService) {

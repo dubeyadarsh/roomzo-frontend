@@ -30,7 +30,7 @@ export class ListPropertyComponent implements OnInit {
   states: any[] = [];
   cities: any[] = [];
   selectedStateIso: string | null = null;
-
+  readonly WATERMARK_TEXT = 'Roomzo.in';
   // Pre-defined Quick Rules
   commonRules = [
     { label: 'No Smoking', value: 'no_smoking', icon: 'smoke_free' },
@@ -99,6 +99,7 @@ export class ListPropertyComponent implements OnInit {
         nearby: this.fb.array([]) // Dynamic list of places
       }),
       final: this.fb.group({
+        contactNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
         name: ['', [Validators.required, Validators.maxLength(200)]],
         description: ['', [Validators.required, Validators.maxLength(1000)]],
         rentAmount: ['', Validators.required],
@@ -189,37 +190,38 @@ export class ListPropertyComponent implements OnInit {
     this.isUploading = true;
 
     try {
-      // 1. Create temporary arrays so we can update in one batch
       const newFiles: File[] = [];
       const newPreviews: string[] = [];
 
       for (const file of Array.from(files)) {
-        newFiles.push(file);
-        // Wait for the image to be read
-        const preview = await this.readFileAsDataURL(file);
+        // A. Add Watermark first
+        const watermarkedFile = await this.watermarkImage(file);
+        newFiles.push(watermarkedFile);
+
+        // B. Generate preview from the WATERMARKED file
+        // This ensures the user sees exactly what will be uploaded
+        const preview = await this.readFileAsDataURL(watermarkedFile);
         newPreviews.push(preview);
       }
 
-      // 2. IMMUTABLE UPDATE: Assign a new array reference
-      // This tells Angular "Hey! The data has definitely changed!"
+      // Update Arrays
       this.selectedFiles = [...this.selectedFiles, ...newFiles];
       this.imagePreviews = [...this.imagePreviews, ...newPreviews];
 
-      // 3. Update Form
+      // Update Form
       this.finalGroup.patchValue({ images: this.selectedFiles });
 
-      // 4. Force UI Update immediately
       this.cd.detectChanges();
 
     } catch (err) {
-      console.error('Error reading files:', err);
+      console.error('Error processing images:', err);
+      this.toastr.error('Failed to process image watermarking.');
     } finally {
       this.isUploading = false;
-      input.value = ''; // Reset input so you can select the same file again if needed
-      this.cd.detectChanges(); // Final check to ensure spinner hides
+      input.value = ''; 
+      this.cd.detectChanges(); 
     }
   }
-
   removeImage(index: number): void {
     this.imagePreviews.splice(index, 1);
     this.selectedFiles.splice(index, 1);
@@ -302,4 +304,69 @@ onSubmit(): void {
     this.toastr.error('Please fill in all required fields.');
   }
 }
+private async watermarkImage(file: File): Promise<File> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      
+      reader.onload = (readerEvent: any) => {
+        const img = new Image();
+        img.onload = () => {
+          // Create canvas
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'));
+            return;
+          }
+
+          // Set canvas dimensions to match original image
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          // 1. Draw the original image
+          ctx.drawImage(img, 0, 0);
+
+          // 2. Configure Watermark Style
+          // Dynamic font size: 5% of the image width (ensures it looks good on 4k or 720p)
+          const fontSize = Math.floor(canvas.width * 0.05); 
+          ctx.font = `bold ${fontSize}px Arial`;
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'bottom';
+          
+          // Add Shadow for visibility on light backgrounds
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+          ctx.shadowBlur = 4;
+          ctx.shadowOffsetX = 2;
+          ctx.shadowOffsetY = 2;
+
+          // Watermark Color
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'; // Semi-transparent white
+
+          // 3. Draw Text (Bottom Right corner with padding)
+          const padding = fontSize / 2;
+          ctx.fillText(this.WATERMARK_TEXT, canvas.width - padding, canvas.height - padding);
+
+          // 4. Convert Canvas back to File
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const newFile = new File([blob], file.name, {
+                type: file.type,
+                lastModified: Date.now(),
+              });
+              resolve(newFile);
+            } else {
+              reject(new Error('Canvas to Blob conversion failed'));
+            }
+          }, file.type, 0.9); // 0.9 is JPEG quality (optional)
+        };
+
+        img.onerror = (err) => reject(err);
+        img.src = readerEvent.target.result;
+      };
+
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+  }
 }

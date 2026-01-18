@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { SearchBarComponent } from '../search-bar/search-bar'; // Ensure path is correct
+import { SearchBarComponent } from '../search-bar/search-bar';
+import { AuthService } from '../../services/auth.service'; // <--- Import Service
 
 @Component({
   selector: 'app-header',
@@ -18,17 +19,22 @@ export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   userMobile = '';
 
-  constructor(private router: Router) {}
+  // Inject AuthService
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
-    this.checkLoginStatus();
-  }
-
-  checkLoginStatus() {
-    // Check if user is verified
-    const isVerified = localStorage.getItem('ownerVerifiedwWIthOtp');
-    this.userMobile = localStorage.getItem('ownerMobile') || '';
-    this.isLoggedIn = (isVerified === 'true');
+    // === THE FIX ===
+    // Subscribe to the "Live" login status
+    this.authService.isLoggedIn$.subscribe((status) => {
+      this.isLoggedIn = status;
+      
+      // Update the user details if logged in
+      if (status) {
+        this.userMobile = localStorage.getItem('ownerEmail') || ''; // Changed to Email based on recent changes
+      } else {
+        this.userMobile = '';
+      }
+    });
   }
 
   toggleMobileMenu() {
@@ -44,14 +50,9 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    // Clear session data
-    localStorage.removeItem('ownerVerifiedwWIthOtp');
-    localStorage.removeItem('ownerMobile');
-    localStorage.removeItem('loginTimestamp');
-    localStorage.removeItem('ownerUser');
+    // Use the Service logout (which handles localStorage + Notification)
+    this.authService.logout();
     
-    // Update state & redirect
-    this.isLoggedIn = false;
     this.isMenuOpen = false;
     this.router.navigate(['/']);
   }

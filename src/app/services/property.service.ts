@@ -206,4 +206,10 @@ return this.http.get(`${this.baseUrl}/listings/owner/${ownerId}`);
     return this.http.
     put(`${this.baseUrl}/listings/update/${id}`, data);
   }
+  updateListingStatus(propertyId: number, status: string): Observable<any> {
+
+  return this.http.patch(`${this.baseUrl}/listings/${propertyId}/status`, null, {
+    params: { status: status }
+  });
+}
 }

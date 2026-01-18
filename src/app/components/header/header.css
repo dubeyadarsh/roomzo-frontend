@@ -127,8 +127,32 @@
   font-weight: 700;
 }
 
+/* ... Existing Desktop Styles ... */
+
+/* === MOBILE ADJUSTMENTS === */
 @media (max-width: 768px) {
-  .auth-desktop {
-    display: none; /* Hide desktop auth on mobile, handled by hamburger menu */
+  /* 1. Remove the rule that hides auth-desktop */
+  /* .auth-desktop { display: none; }  <-- DELETE OR COMMENT THIS OUT */
+
+  /* 2. Adjust spacing so Search + Profile + Hamburger fit */
+  .actions {
+    gap: 8px; /* Reduce gap on mobile */
+  }
+
+  /* 3. Make the user mobile number hidden on phone to save space */
+  /* The avatar 'U' is enough for mobile */
+  .user-info span {
+    display: block; /* Ensure it shows inside the dropdown */
+  }
+
+  /* 4. Optional: Adjust profile button padding for touch targets */
+  .profile-btn {
+    padding: 4px; /* Smaller padding on mobile */
+    border: none; /* Cleaner look on mobile */
+  }
+  
+  /* Hide the chevron icon on mobile to save space */
+  .profile-btn mat-icon {
+    display: none; 
   }
 }

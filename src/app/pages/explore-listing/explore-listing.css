@@ -170,10 +170,11 @@ a:hover { color: var(--primary); }
 }
 @media (max-width: 768px) {
   .layout-grid { grid-template-columns: 1fr; }
-  .filters-sidebar { display: none; /* Hide filters on mobile for now */ }
+  /* .filters-sidebar { display: none; Hide filters on mobile for now } */
   .property-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; text-align: center; }
   .footer-brand p { margin: 0 auto; }
+  .search-btn{display: none;}
 }
 /* Force white background and ensure it sits on top */
 ::ng-deep .mat-mdc-autocomplete-panel {

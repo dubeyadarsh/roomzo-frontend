@@ -45,7 +45,7 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
     bedrooms: 'Any'
   };
 
-  availabilityFilter: 'available' | 'all' = 'available';
+  availabilityFilter: 'available' | 'all' = 'all';
 
   // Pagination
   currentPage = 0;

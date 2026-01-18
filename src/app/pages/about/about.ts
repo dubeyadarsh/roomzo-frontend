@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-about',
@@ -12,7 +12,7 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./about.css']
 })
 export class AboutComponent {
-
+constructor(private router: Router) {}
   // Stats Data
   stats = [
     { label: 'Properties Sold', value: '5k+' },
@@ -63,4 +63,8 @@ export class AboutComponent {
       image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80' 
     }
   ];
+  goToContact() {
+    // valid navigation
+this.router.navigate(['/'], { fragment: 'contactUs' });
+  }
 }

@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { PropertyService } from '../../services/property.service';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-my-listings',
@@ -27,20 +28,15 @@ export class MyListingsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const storedId = localStorage.getItem('ownerId'); 
-    
-    // DEBUG: Check what ID we are using
-    console.log('Stored Owner ID:', storedId);
-
-    if (storedId) {
-      this.ownerId = parseInt(storedId, 10);
+    const storedUser = JSON.parse(localStorage.getItem('ownerUser') || 'null'); 
+    if (storedUser && storedUser.id) {
+      this.ownerId = parseInt(storedUser.id, 10);
+          this.loadMyListings();
     } else {
-      // Fallback for testing (if no login found)
-      console.warn('No Owner ID found, using default: 1');
-      this.ownerId = 1; 
+      this.toastr.error('User not logged in');
+      this.isLoading = false; // Stop loading if no user
     }
 
-    this.loadMyListings();
   }
 
   loadMyListings() {
@@ -87,4 +83,42 @@ export class MyListingsComponent implements OnInit {
   formatPrice(price: number): string {
     return '₹' + (price ? price.toLocaleString() : '0');
   }
+  getStatusClass(status: string): string {
+  switch (status) {
+    case 'RENTED': return 'badge-rented';
+    case 'EXPIRED': return 'badge-expired';
+    case 'HIDDEN': return 'badge-hidden';
+
+    default: return 'badge-active';
+  }
+}
+changeStatus(property: any, event: any) {
+  const newStatus = event.target.value;
+  const originalStatus = property.currentStatus; // Backup in case of error
+
+  // Optimistic UI Update (Change it immediately on screen)
+  property.currentStatus = newStatus; 
+
+  this.propertyService.updateListingStatus(property.id, newStatus).subscribe({
+    next: (res) => {
+      this.toastr.success(`Status updated to ${newStatus}`);
+      this.cd.detectChanges();
+    },
+    error: (err: HttpErrorResponse) => {
+      // Revert if failed
+      property.currentStatus = originalStatus; 
+      this.toastr.error('Failed to update status');
+      console.error(err);
+      this.cd.detectChanges();
+    }
+  });
+}
+// Add this inside your MyListingsComponent class
+getStatusLabel(status: any): string {
+  const code = Number(status); // Ensure it's a number
+  if (code === 1) return 'RENTED';
+  if (code === 2) return 'HIDDEN';
+  if (code === 3) return 'EXPIRED';
+  return 'ACTIVE'; // Default for 0 or null
+}
 }

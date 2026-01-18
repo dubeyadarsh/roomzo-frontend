@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { gsap } from 'gsap';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
@@ -10,6 +11,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./hero.css']
 })
 export class HeroComponent implements AfterViewInit {
+  constructor(private router: Router) {}
 location: any;
 propertyType: any;
 onSearch() {
@@ -60,5 +62,8 @@ throw new Error('Method not implemented.');
       script.onload = () => initLottie((window as any).lottie);
       document.body.appendChild(script);
     }
+  }
+   goToExploreListing() {
+    this.router.navigate(['/search-listing']);
   }
 }
