@@ -1,47 +1,67 @@
-.rz-header { background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.05); position:sticky; top:0; z-index:50; }
-.rz-header .container { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; max-width:1200px; margin:0 auto; }
-.logo { font-weight:700; font-size:1.25rem; color:#1e3a8a; text-decoration:none; }
-.nav-desktop { display:flex; gap:18px; align-items:center; }
-.nav-desktop a { color:#374151; text-decoration:none; font-weight:500; }
-.actions { display:flex; gap:12px; align-items:center; }
-.hamburger { background:none; border:0; font-size:1.25rem; display:none; cursor:pointer; }
-.nav-mobile { display:none; flex-direction:column; padding:12px 20px; gap:10px; border-top:1px solid #f1f5f9; background:#fff; }
-@media (max-width: 900px) {
-  .nav-desktop { display:none; }
-  .hamburger { display:inline-block; }
-  .nav-mobile { display:flex; }
+/* ========================================================
+   DESKTOP HEADER
+======================================================== */
+.rz-header {
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
-/* ... Existing Header Styles ... */
 
-/* ACTIONS CONTAINER */
+.rz-header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.brand .logo {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #1e3a8a;
+  text-decoration: none;
+}
+
+.nav-desktop {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+}
+
+.nav-desktop a {
+  color: #374151;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-desktop a:hover {
+  color: #1e3a8a;
+}
+
 .actions {
   display: flex;
   align-items: center;
-  gap: 16px; /* Spacing between search bar and auth buttons */
+  gap: 16px;
 }
 
-/* LOGIN BUTTON */
-.btn-login {
-  background: #1e3a8a;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 14px;
+/* --- Desktop Profile Menu --- */
+.auth-desktop {
+  display: flex;
+  align-items: center;
 }
 
-/* PROFILE DROPDOWN CONTAINER */
 .profile-menu {
   position: relative;
 }
 
-/* AVATAR BUTTON */
 .profile-btn {
   background: none;
   border: 1px solid #e5e7eb;
-  padding: 4px 4px 4px 8px; /* Extra left padding */
+  padding: 4px 4px 4px 8px;
   border-radius: 20px;
   display: flex;
   align-items: center;
@@ -67,7 +87,6 @@
   font-weight: bold;
 }
 
-/* DROPDOWN BOX */
 .dropdown {
   position: absolute;
   top: 120%;
@@ -82,14 +101,20 @@
   padding: 8px 0;
 }
 
-/* DROPDOWN ITEMS */
 .user-info {
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
 }
+
 .user-info strong { font-size: 14px; color: #111827; }
 .user-info span { font-size: 12px; color: #6b7280; }
+
+.divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 4px 0;
+}
 
 .menu-item {
   display: flex;
@@ -112,47 +137,121 @@
 }
 
 .menu-item.logout {
-  color: #ef4444; /* Red for logout */
+  color: #ef4444;
 }
 
-.divider {
-  height: 1px;
-  background: #e5e7eb;
-  margin: 4px 0;
-}
+/* ========================================================
+   HIDE MOBILE ELEMENTS ON DESKTOP
+======================================================== */
+.mobile-bottom-nav { display: none; }
+.mobile-dropdown-overlay { display: none; }
 
-/* MOBILE ADJUSTMENTS */
-.mobile-highlight {
-  color: #1e3a8a !important;
-  font-weight: 700;
-}
-
-/* ... Existing Desktop Styles ... */
-
-/* === MOBILE ADJUSTMENTS === */
-@media (max-width: 768px) {
-  /* 1. Remove the rule that hides auth-desktop */
-  /* .auth-desktop { display: none; }  <-- DELETE OR COMMENT THIS OUT */
-
-  /* 2. Adjust spacing so Search + Profile + Hamburger fit */
-  .actions {
-    gap: 8px; /* Reduce gap on mobile */
-  }
-
-  /* 3. Make the user mobile number hidden on phone to save space */
-  /* The avatar 'U' is enough for mobile */
-  .user-info span {
-    display: block; /* Ensure it shows inside the dropdown */
-  }
-
-  /* 4. Optional: Adjust profile button padding for touch targets */
-  .profile-btn {
-    padding: 4px; /* Smaller padding on mobile */
-    border: none; /* Cleaner look on mobile */
+/* ========================================================
+   MOBILE APP RESPONSIVENESS (Max-width: 900px)
+======================================================== */
+@media (max-width: 900px) {
+  
+  /* Hide Desktop Navigation & Auth */
+  .nav-desktop, .auth-desktop { 
+    display: none !important; 
   }
   
-  /* Hide the chevron icon on mobile to save space */
-  .profile-btn mat-icon {
-    display: none; 
+  /* Adjust Header for Mobile (Cleaner look) */
+  .rz-header {
+    box-shadow: none;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  /* --- Mobile Bottom Navigation --- */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0; 
+    left: 0; 
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.06);
+    z-index: 1000;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 8px 10px;
+    padding-bottom: calc(8px + env(safe-area-inset-bottom)); /* iPhone safe area */
+  }
+
+  .nav-item {
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    text-decoration: none; 
+    color: #6b7280; 
+    font-size: 11px; 
+    font-weight: 600;
+    flex: 1; /* Distributes buttons evenly */
+    gap: 4px; 
+    cursor: pointer;
+  }
+
+  .nav-item mat-icon { font-size: 26px; width: 26px; height: 26px; }
+  .nav-item.active-link { color: #1e3a8a; }
+
+  /* --- Floating Action Button (FAB) for List Property --- */
+  .center-action { position: relative; justify-content: flex-end; }
+  .center-action span { margin-top: 30px; } /* Pushes text under the button */
+  
+  .fab-button {
+    background: #1e3a8a; 
+    color: white;
+    width: 56px; 
+    height: 56px; 
+    border-radius: 50%;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    position: absolute; 
+    top: -36px; /* Pulls it up out of the bar */
+    left: 50%; 
+    transform: translateX(-50%);
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+    border: 5px solid #ffffff; /* Creates the cut-out separation effect */
+    transition: transform 0.2s;
+  }
+  
+  .fab-button mat-icon { font-size: 32px; width: 32px; height: 32px; }
+  .fab-button:active { transform: translateX(-50%) scale(0.95); }
+
+  /* --- Mobile Profile Menu Pop-up --- */
+  .mobile-dropdown-overlay {
+    display: block; 
+    position: fixed; 
+    bottom: 80px; /* Sits right above the bottom nav */
+    left: 0; 
+    width: 100%; 
+    z-index: 999;
+  }
+  
+  .overlay-backdrop {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100vw; 
+    height: 100vh;
+    background: rgba(0,0,0,0.3); 
+    z-index: 1000;
+  }
+  
+  .mobile-dropdown {
+    background: white; 
+    margin: 0 16px; 
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+    position: relative; 
+    z-index: 1001; 
+    padding: 12px 0;
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  @keyframes slideUp { 
+    from { transform: translateY(20px); opacity: 0; } 
+    to { transform: translateY(0); opacity: 1; } 
   }
 }

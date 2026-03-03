@@ -1,54 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, RouterModule } from '@angular/router'; // Ensure RouterModule is imported for routerLinkActive
 import { MatIconModule } from '@angular/material/icon';
 import { SearchBarComponent } from '../search-bar/search-bar';
-import { AuthService } from '../../services/auth.service'; // <--- Import Service
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatIconModule, SearchBarComponent],
+  imports: [CommonModule, RouterModule, MatIconModule, SearchBarComponent],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
 export class HeaderComponent implements OnInit {
   
-  mobileMenuOpen = false;
   isLoggedIn = false;
   isMenuOpen = false;
   userMobile = '';
 
-  // Inject AuthService
   constructor(private router: Router, private authService: AuthService) {}
-private checkAndClearExpiredStorage() {
+
+  private checkAndClearExpiredStorage() {
     const loginTime = localStorage.getItem('loginTimestamp');
-    
     if (loginTime) {
-      // 10 Days in milliseconds
       const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
       const timeElapsed = Date.now() - parseInt(loginTime, 10);
-
       if (timeElapsed >= TEN_DAYS) {
-        // Data has expired! Clean it up.
         localStorage.removeItem('ownerVerifiedwWIthOtp');
         localStorage.removeItem('loginTimestamp');
         localStorage.removeItem('ownerEmail'); 
         localStorage.removeItem('ownerUser'); 
-
-     
-      
       }
     }
 
-    //check for basic user
     const userLoginTime = localStorage.getItem('userloginTimestamp');
-    
     if (userLoginTime) {
-      // 1 Day in milliseconds
       const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
       const timeElapsed = Date.now() - parseInt(userLoginTime, 10); 
-      
       if (timeElapsed >= ONE_DAY) {
         localStorage.removeItem('userVerifiedwWIthOtp');
         localStorage.removeItem('userloginTimestamp');
@@ -56,40 +44,34 @@ private checkAndClearExpiredStorage() {
       }
     }
   }
+
   ngOnInit() {
     this.checkAndClearExpiredStorage();
-    // === THE FIX ===
-    // Subscribe to the "Live" login status
+    
     this.authService.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
-      
-      // Update the user details if logged in
       if (status) {
-        this.userMobile = localStorage.getItem('ownerEmail') || ''; // Changed to Email based on recent changes
+        this.userMobile = localStorage.getItem('ownerEmail') || '';
       } else {
         this.userMobile = '';
+        this.isMenuOpen = false; // Close menu if logged out
       }
     });
   }
 
-  toggleMobileMenu() {
-    this.mobileMenuOpen = !this.mobileMenuOpen;
-  }
-
+  // Opens/Closes the Profile Dropdown
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
 
+  // Closes the menu explicitly (used when clicking a link inside it)
   closeMenu() {
     this.isMenuOpen = false;
   }
 
   logout() {
-    // Use the Service logout (which handles localStorage + Notification)
     this.authService.logout();
-    
     this.isMenuOpen = false;
     this.router.navigate(['/']);
   }
-  
 }

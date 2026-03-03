@@ -1,6 +1,6 @@
 import { Component, OnInit, ChangeDetectorRef, OnDestroy, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Added Router
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { PropertyService } from '../../services/property.service';
@@ -9,11 +9,9 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ToastrService } from 'ngx-toastr';
 import { getAmenitiesMap } from '../../services/Utility';
 
-// Import Swiper register function
 import { register } from 'swiper/element/bundle';
 import { AuthService } from '../../services/auth.service';
 
-// Register Swiper custom elements immediately
 register();
 
 @Component({
@@ -29,16 +27,18 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   similarProperties: any[] = [];
   displayAmenities: any[] = [];
   
+  // NEW: Store owner name from the API response
+  ownerName: string = 'Property Owner'; 
+
   isLoading = true;
   showFullDescription = false;
   currentId: string | null = null;
   mapUrl: SafeResourceUrl | null = null; 
   isCopied = false;
 
-  // --- NEW: Modal State ---
   showContactModal = false;
   ownerDetails = {
-    name: 'Property Owner', // Default
+    name: 'Property Owner', 
     phone: '+91 98XXX XXXXX',
     email: 'hidden@roomzo.com'
   };
@@ -47,7 +47,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router, // Injected Router
+    private router: Router,
     private propertyService: PropertyService,
     private cd: ChangeDetectorRef,
     private sanitizer: DomSanitizer,
@@ -62,7 +62,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
         this.property = undefined;
         this.similarProperties = [];
         this.mapUrl = null; 
-        this.showContactModal = false; // Reset modal on nav
+        this.showContactModal = false; 
         window.scrollTo(0, 0);
         this.cd.detectChanges();
       }),
@@ -80,10 +80,12 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
       next: (response: any) => {
         if (response.status === 1 && response.data) {
           this.property = response.data;
+          
+          // EXTRACT OWNER NAME HERE
+          this.ownerName = response.ownerName || 'Property Owner';
+          
           this.mapAmenities(this.property);
           this.loadMapCoordinates(this.property.city, this.property.state);
-          
-          // --- NEW: Check if we returned from Login to open popup ---
           this.checkReturnFromLogin();
         } else {
             this.toastr.warning('Property data not found', 'Not Found');
@@ -100,13 +102,10 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  // --- NEW: Auth Logic & Popup Trigger ---
   contactAgent() {
     if (this.isUserLoggedIn() || this.isOwnerLoggedIn()) {
       this.openContactModal();
     } else {
-      // Redirect to Login with return URL that includes '?showContact=true'
-      // This ensures the popup opens automatically after they verify OTP
       const returnUrl = `/property-details/${this.currentId}?showContact=true`;
       this.router.navigate(['/login'], { queryParams: { returnUrl: returnUrl } });
     }
@@ -123,6 +122,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+  
   isOwnerLoggedIn(): boolean {
     const isVerified = localStorage.getItem('ownerVerifiedwWIthOtp');
     const loginTime = localStorage.getItem('loginTimestamp');
@@ -134,13 +134,11 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+  
   checkReturnFromLogin() {
-    // Check query params for 'showContact'
     const params = this.route.snapshot.queryParams;
     if (params['showContact'] === 'true' && this.isUserLoggedIn()) {
       this.openContactModal();
-      
-      // Clear the query param so refresh doesn't keep opening it
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { showContact: null },
@@ -151,13 +149,12 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   }
 
   openContactModal() {
-    // Check if property has ownerId
     if (!this.property || !this.property.ownerId) {
        this.toastr.error('Owner information not available');
        return;
     }
 
-    this.isLoading = true; // Optional: Show spinner inside modal if you want
+    this.isLoading = true;
 
     this.authService.getOwnerDetails(this.property.ownerId).subscribe({
       next: (res: any) => {
@@ -184,7 +181,6 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   closeContactModal() {
     this.showContactModal = false;
   }
-  // ---------------------------------------
 
   loadMapCoordinates(city: string, state: string) {
     this.propertyService.getGeocode(city, state).subscribe({
@@ -221,7 +217,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   }
 
   saveProperty() { this.toastr.success('Property saved to your favorites', 'Saved'); }
-  requestBooking() { this.contactAgent(); } // Redirect booking to contact as well
+  requestBooking() { this.contactAgent(); } 
   scheduleTour() { this.toastr.info('Tour scheduling feature coming soon!', 'Coming Soon'); }
 
   ngOnDestroy(): void {

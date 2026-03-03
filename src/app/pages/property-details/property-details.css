@@ -16,462 +16,230 @@
   padding: 20px;
 }
 
+/* Helpers */
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+
 /* --- 1. Header --- */
 .property-header { padding: 20px 0; }
 .breadcrumbs { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px 0; }
-.address { color: var(--text-muted); display: flex; align-items: center; gap: 4px; font-size: 14px; }
-.address mat-icon { font-size: 16px; width: 16px; height: 16px; }
+h1 { font-size: 32px; font-weight: 800; margin: 0 0 8px 0; line-height: 1.2; }
+.address { color: var(--text-muted); display: flex; align-items: center; gap: 4px; font-size: 15px; }
+.address mat-icon { font-size: 18px; width: 18px; height: 18px; }
 
 .header-content { display: flex; justify-content: space-between; align-items: flex-end; }
 .action-buttons { display: flex; gap: 12px; }
 .btn-outline {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px; justify-content: center;
   background: white; border: 1px solid var(--border); padding: 8px 16px;
-  border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
+  border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-main);
 }
 .btn-outline:hover { background: #f9fafb; border-color: #d1d5db; }
 
-/* --- 2. Gallery (Mosaic Grid) --- */
-/* .gallery-section { margin-top: 24px; border-radius: 16px; overflow: hidden; height: 450px; } */
+/* Buttons */
+.btn-primary {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--primary); color: white; border: none; padding: 14px;
+  border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s;
+}
+.btn-primary:hover { background: #1e40af; }
+
+.btn-primary-outline {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: white; color: var(--primary); border: 2px solid var(--primary); padding: 12px;
+  border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; transition: 0.2s;
+}
+.btn-primary-outline:hover { background: #f0f4f8; }
+.full-width { width: 100%; }
+
+/* --- 2. Gallery --- */
+.gallery-section { margin-top: 12px; margin-bottom: 24px; border-radius: 16px; overflow: hidden; height: 450px; }
 .gallery-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 8px;
-  height: 100%;
+  display: grid; grid-template-columns: 2fr 1fr 1fr; grid-template-rows: 1fr 1fr;
+  gap: 8px; height: 100%;
 }
 .main-img { grid-column: 1 / 2; grid-row: 1 / 3; }
 .main-img img, .side-img img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; transition: opacity 0.2s; }
 .side-img img:hover, .main-img img:hover { opacity: 0.9; }
-
 .relative { position: relative; }
-.view-photos-btn {
-  position: absolute; bottom: 16px; right: 16px;
-  background: white; border: 1px solid var(--text-main); padding: 8px 16px;
-  border-radius: 6px; font-weight: 600; display: flex; align-items: center; gap: 8px;
-  cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
 
 /* --- 3. Specs Bar --- */
 .specs-bar {
   display: flex; gap: 32px; padding: 24px 0; border-bottom: 1px solid var(--border); margin-bottom: 32px;
 }
 .spec-item { display: flex; align-items: center; gap: 12px; }
-.spec-item mat-icon { font-size: 24px; width: 24px; height: 24px; color: var(--text-muted); }
-.spec-item div { font-size: 14px; color: var(--text-muted); }
+.spec-item mat-icon { font-size: 28px; width: 28px; height: 28px; color: var(--text-muted); }
+.spec-item div { font-size: 14px; color: var(--text-muted); line-height: 1.4; }
 .spec-item strong { display: block; font-size: 16px; color: var(--text-main); }
 
 /* --- 4. Content Layout --- */
-.content-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 64px; position: relative; }
+.content-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 64px; align-items: start;}
 
 /* Left Column */
 .info-block h2 { font-size: 22px; font-weight: 700; margin-bottom: 16px; }
-.info-block p { line-height: 1.6; color: #4b5563; }
-.truncated {
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-}
+.info-block p { line-height: 1.6; color: #4b5563; font-size: 16px; }
+.truncated { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .link-btn {
   background: none; border: none; color: var(--text-main); font-weight: 600; text-decoration: underline;
-  cursor: pointer; display: flex; align-items: center; gap: 4px; margin-top: 8px; padding: 0;
+  cursor: pointer; display: flex; align-items: center; gap: 4px; margin-top: 8px; padding: 0; font-size: 15px;
 }
 
 .divider { height: 1px; background: var(--border); margin: 32px 0; }
 
 .amenities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.amenity-item { display: flex; align-items: center; gap: 12px; font-size: 15px; }
+.amenity-item { display: flex; align-items: center; gap: 12px; font-size: 16px; color: #374151; }
 .amenity-item mat-icon { color: var(--text-muted); }
 
-.map-placeholder {
-  background: #e5e7eb; height: 200px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-}
-.map-placeholder mat-icon { font-size: 40px; width: 40px; height: 40px; color: white; background: #ef4444; padding: 8px; border-radius: 50%; }
+/* Right Column (Sidebar) */
+.sidebar-column { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 24px; }
 
-/* Right Column (Sticky) */
-.sidebar-column { position: relative; }
 .booking-card {
-  position: sticky; top: 24px;
-  border: 1px solid var(--border); border-radius: 12px; padding: 24px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.08); background: white;
+  border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05); background: white;
+}
+.card-header { margin-bottom: 12px; }
+.price { font-size: 28px; font-weight: 800; color: var(--text-main); }
+.price span { font-size: 15px; font-weight: 500; color: var(--text-muted); }
+
+/* --- Updated Status Tag --- */
+.status-tag {
+  display: flex;              /* Changed from inline-flex */
+  width: 100%;                /* Forces it to match button width */
+  box-sizing: border-box;     /* Keeps padding inside the width */
+  align-items: center; 
+  justify-content: center; 
+  gap: 8px;
+  padding: 12px;              /* Matched padding to buttons */
+  border-radius: 8px; 
+  color: white; 
+  font-weight: 600; 
+  font-size: 15px;
+  margin-top: 16px;           /* Adds breathing room below the price */
+  margin-bottom: 4px;         /* Brings it closer to the schedule button */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* Subtle depth */
 }
 
-.card-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
-.price { font-size: 24px; font-weight: 800; color: var(--text-main); }
-.price span { font-size: 14px; font-weight: 400; color: var(--text-muted); }
-.rating { display: flex; align-items: center; gap: 4px; font-weight: 600; font-size: 14px; }
-.status-tag { color: #166534; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; }
-.status-tag::before { content: ''; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; }
-
-.date-inputs { display: flex; border: 1px solid var(--text-muted); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
-.input-box { flex: 1; padding: 10px; border-right: 1px solid var(--text-muted); }
-.input-box:last-child { border-right: none; }
-.input-box label { font-size: 10px; font-weight: 800; display: block; margin-bottom: 2px; }
-.input-box input { width: 100%; border: none; outline: none; font-size: 14px; }
-
-.btn-primary {
-  width: 100%; background: var(--primary); color: white; border: none; padding: 14px;
-  border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-bottom: 12px;
-}
-.btn-primary:hover { background: #1e40af; }
-
-.full-width { width: 100%; margin-bottom: 12px; justify-content: center; }
-.micro-text { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-
-/* Agent Card */
+.status-tag.available { background-color: #10b981; }
+.status-tag.rented { background-color: #64748b; }
+/* Agent Card Stacked Design */
 .agent-card {
-  margin-top: 24px; padding: 16px; border: 1px solid var(--border); border-radius: 12px;
-  display: flex; justify-content: space-between; align-items: center;
+  border: 1px solid var(--border); border-radius: 16px; padding: 24px;
+  background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
-.agent-info { display: flex; gap: 12px; align-items: center; }
-.avatar { width: 40px; height: 40px; background: #d1d5db; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: white; }
-.agent-info h4 { margin: 0; font-size: 14px; }
-.agent-info p { margin: 0; font-size: 12px; color: var(--text-muted); }
-.btn-text { background: none; border: none; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.agent-profile { display: flex; align-items: center; gap: 16px; }
+.avatar { 
+  width: 54px; height: 54px; background: #e0e7ff; color: var(--primary); 
+  border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+  font-weight: 700; font-size: 20px; 
+}
+.agent-info-text h4 { margin: 0; font-size: 18px; color: var(--text-main); font-weight: 700; }
+.listed-by { margin: 0 0 2px 0; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* --- 5. Similar Homes --- */
+/* Similar Homes */
 .similar-section { margin-top: 64px; padding-bottom: 40px; }
 .similar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 24px; }
-.similar-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.similar-card img { width: 100%; height: 200px; object-fit: cover; }
+.similar-card { border: 1px solid var(--border); border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; transition: 0.2s; display: block; }
+.similar-card:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.08); transform: translateY(-4px); }
+.similar-card img { width: 100%; height: 220px; object-fit: cover; }
 .sim-details { padding: 16px; }
 .sim-price { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-.sim-price span { font-size: 12px; font-weight: 400; color: var(--text-muted); }
-.similar-card h4 { margin: 0 0 4px 0; font-size: 15px; }
+.similar-card h4 { margin: 0 0 4px 0; font-size: 15px; color: var(--text-main); }
 .similar-card p { color: var(--text-muted); font-size: 13px; margin: 0; }
 
-/* Loading */
+/* View utility */
+@media (min-width: 901px) {
+  .mobile-only { display: none !important; }
+}
+
+/* ========================================================
+   MOBILE RESPONSIVENESS (The Magic Happens Here) 
+======================================================== */
+@media (max-width: 900px) {
+  .desktop-only { display: none !important; }
+
+  /* 1. Remove strict wrapper padding so Swiper touches edges */
+  .page-container { padding: 0; }
+  
+  /* Add padding back exclusively to text-heavy sections */
+  .property-header, .specs-bar, .content-layout, .similar-section {
+    padding-left: 20px; padding-right: 20px;
+  }
+
+  /* 2. Swiper overrides - Professional Cover Images */
+  .gallery-section.mobile-only {
+    margin: 0; height: auto; border-radius: 0; 
+  }
+  swiper-container {
+    width: 100%;
+    height: 65vw; /* Perfectly scales with screen width */
+    max-height: 450px;
+    min-height: 250px;
+    background-color: #f3f4f6; /* Soft placeholder background */
+  }
+  .swiper-image-link {
+    display: block; width: 100%; height: 100%;
+  }
+  swiper-slide img {
+    display: block; width: 100%; height: 100%;
+    object-fit: cover; /* Edge-to-edge perfection */
+  }
+
+  /* 3. Header formatting */
+  h1 { font-size: 26px; }
+  .property-header { padding-top: 16px; padding-bottom: 12px; }
+
+  /* 4. Layout Stacking */
+  .content-layout { grid-template-columns: 1fr; gap: 32px; }
+  
+  /* 5. Mobile Specs Bar (Clean grid cards) */
+  .specs-bar {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    border-bottom: none; margin-bottom: 16px; padding-top: 12px; padding-bottom: 12px;
+  }
+  .spec-item {
+    background: #f9fafb; border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; flex-direction: column; align-items: flex-start; gap: 8px;
+  }
+  .spec-item mat-icon { font-size: 24px; width: 24px; height: 24px; }
+  
+  /* 6. Sidebar becomes bottom blocks */
+  .sidebar-column { position: relative; top: 0; gap: 16px; }
+  .booking-card { padding: 20px; }
+  
+  /* 7. Similar Homes */
+  .similar-grid { grid-template-columns: 1fr; }
+  .similar-card img { height: 250px; }
+}
+
+/* Modals & Loading */
 .loading-state { text-align: center; padding: 100px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 12px; }
 .spinner { animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Mobile */
-@media (max-width: 900px) {
-  .content-layout { grid-template-columns: 1fr; }
-  .gallery-grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, 200px); }
-  .main-img { grid-column: 1; grid-row: 1; }
-  .side-img { display: none; } /* Hide extra images on mobile */
-  .similar-grid { grid-template-columns: 1fr; }
-}
+/* Shared Guidebook / Rules UI remain identical, just perfectly nested */
+.rules-list { list-style: none; padding: 0; margin: 0 0 16px 0; display: grid; grid-template-columns: 1fr; gap: 12px; }
+.rules-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: #484848; }
 
-.not-found-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 60vh;
-  text-align: center;
-}
-.not-found-state h2 { margin: 16px 0 8px; color: #374151; }
-.not-found-state p { color: #6b7280; margin-bottom: 24px; }
-
-.status-tag {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 0;
-  border-radius: 8px; /* Slightly rounded corners */
-  color: white;       /* Text is always white */
-  font-weight: 600;
-  font-size: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
-}
-
-/* AVAILABLE: Professional Emerald */
-.status-tag.available {
-  background-color: #10b981; /* Tailwind Emerald 500 */
-  /* Gradient optional: background: linear-gradient(135deg, #10b981 0%, #059669 100%); */
-}
-
-/* RENTED: Professional Slate */
-.status-tag.rented {
-  background-color: #64748b; /* Tailwind Slate 500 */
-}
-.guidebook-section {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.subtitle {
-  color: #717171;
-  font-size: 14px;
-  margin-top: -8px;
-  margin-bottom: 16px;
-}
-
-/* Rules List */
-.rules-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* 2 Column layout for rules */
-  gap: 12px;
-
-  li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    color: #484848;
-
-    .rule-icon {
-      color: #717171;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-  }
-}
-
-/* Custom Note Box */
-.custom-note {
-  background-color: #f7f7f7;
-  padding: 16px;
-  border-radius: 8px;
-  display: flex;
-  gap: 12px;
-  
-  mat-icon {
-    color: #FF5A5F; /* Brand accent color */
-    transform: rotate(180deg); /* Stylistic quote choice */
-  }
-
-  p {
-    margin: 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: #484848;
-    font-style: italic;
-  }
-}
-
-/* Nearby Places Grid */
-.nearby-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-
-.nearby-card {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px;
-  border: 1px solid #dddddd;
-  border-radius: 12px;
-  transition: box-shadow 0.2s ease;
-
-  &:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  }
-
-  .place-icon {
-    width: 40px;
-    height: 40px;
-    background-color: #f1f1f1;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    mat-icon {
-      color: #222;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
-    }
-  }
-
-  .place-details {
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .place-header {
-    display: flex;
-    flex-direction: column;
-    
-    .place-name {
-      font-weight: 600;
-      font-size: 15px;
-      color: #222;
-    }
-    
-    .place-type {
-      font-size: 12px;
-      color: #717171;
-    }
-  }
-
-  .place-dist {
-    font-weight: 500;
-    font-size: 14px;
-    color: #484848;
-    background: #f7f7f7;
-    padding: 4px 8px;
-    border-radius: 6px;
-  }
-}
-
-/* Responsive adjust for mobile */
-@media (max-width: 768px) {
-  .rules-list {
-    grid-template-columns: 1fr; /* Single column on mobile */
-  }
-}
-@media (max-width: 900px) {
-  .desktop-only { display: none !important; }
-  .mobile-only { display: block !important; }
-
-  /* Reset padding so carousel touches edges */
-  .page-container {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  /* --- SWIPER CAROUSEL FIXED HEIGHT --- */
-  swiper-container {
-    width: 100%;
-    height: 300px; /* Forces the carousel to be visible */
-    background-color: #000;
-  }
-
-  swiper-slide img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  /* Add padding back to text content */
-  .property-header, .content-layout, .specs-bar, .info-block {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-}
-
-@media (min-width: 900px) {
-.gallery-section { margin-top: 24px; border-radius: 16px; overflow: hidden; height: 450px; }
-
-}
-
-/* ... Existing Desktop Styles ... */
-
-/* Mobile Fix for Specs Bar */
-@media (max-width: 600px) {
-  .specs-bar {
-    display: grid;               /* Switch from Flex to Grid */
-    grid-template-columns: 1fr 1fr; /* Create 2 equal columns */
-    gap: 16px;                   /* Reduce gap from 32px to 16px */
-    padding: 16px 20px;          /* Ensure padding matches page sides */
-    margin-bottom: 24px;
-  }
-
-  .spec-item {
-    font-size: 13px;             /* Slightly smaller text for mobile */
-    white-space: nowrap;         /* Prevent text wrapping inside the item */
-  }
-  
-  .spec-item mat-icon {
-    font-size: 20px;             /* Resize icon slightly */
-    width: 20px;
-    height: 20px;
-  }
-}
-/* ... (Existing CSS) ... */
-
-/* === MODAL STYLES === */
+/* Overlay styles... */
 .modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: fadeIn 0.2s ease-out;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6);
+  z-index: 1000; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease-out;
 }
-
 .modal-content {
-  background: white;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-  animation: slideUp 0.3s ease-out;
+  background: white; width: 90%; max-width: 400px; border-radius: 16px;
+  overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: slideUp 0.3s ease-out;
 }
-
-.modal-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid #eee;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.modal-header h3 { margin: 0; font-size: 18px; color: #111; }
-
-.close-btn {
-  background: none; border: none; cursor: pointer; color: #666;
-  display: flex; align-items: center; padding: 4px;
-}
-.close-btn:hover { color: #000; background: #f5f5f5; border-radius: 50%; }
-
+.modal-header { padding: 16px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+.close-btn { background: none; border: none; cursor: pointer; color: #666; display: flex; align-items: center; padding: 4px; }
 .modal-body { padding: 24px; }
-
-.owner-profile {
-  text-align: center; margin-bottom: 24px;
-}
-
-.avatar-large {
-  width: 64px; height: 64px;
-  background: #1e3a8a; color: white;
-  font-size: 28px; font-weight: bold;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 12px;
-}
-
-.verified-badge {
-  color: #059669; /* Green */
-  font-size: 13px; font-weight: 500;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-  margin-top: 4px;
-}
-.verified-badge mat-icon { font-size: 16px; width: 16px; height: 16px; }
-
-.contact-info {
-  background: #f9fafb;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 24px;
-}
-
-.info-row {
-  display: flex; align-items: flex-start; gap: 12px;
-  margin-bottom: 16px;
-}
+.owner-profile { text-align: center; margin-bottom: 24px; }
+.avatar-large { width: 64px; height: 64px; background: var(--primary); color: white; font-size: 28px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
+.verified-badge { color: #059669; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: 4px; }
+.contact-info { background: #f9fafb; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+.info-row { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
 .info-row:last-child { margin-bottom: 0; }
-.info-row mat-icon { color: #6b7280; }
-
 .info-row label { display: block; font-size: 12px; color: #6b7280; margin-bottom: 2px; }
-.contact-link {
-  font-size: 16px; font-weight: 600; color: #1e3a8a; text-decoration: none;
-}
-.contact-link:hover { text-decoration: underline; }
-
-.modal-actions {
-  display: flex; flex-direction: column; gap: 12px;
-}
-
-.full-width { width: 100%; justify-content: center; }
-
+.contact-link { font-size: 16px; font-weight: 600; color: #1e3a8a; text-decoration: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

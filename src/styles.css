@@ -93,3 +93,47 @@ ul, ol, li { font-size: 1rem; line-height: 1.6; }
 .fs-lg { font-size: 1.125rem; }
 
 /* ...existing code... */
+
+:host {
+  --primary: #1e3a8a;
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+  --bg-page: #ffffff;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-main);
+  display: block;
+  background: var(--bg-page);
+  min-height: 80vh; /* Ensures the whole component is always tall */
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 80vh; /* Keeps footer down even if a property has no description/photos */
+}
+/* Modals & Loading */
+.loading-state { 
+  text-align: center; 
+  min-height: 80vh; /* <--- This is the magic line that fixes the loading jump */
+  color: var(--text-muted); 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 12px; 
+}
+
+.spinner { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.not-found-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh; /* Ensures the 404 screen also pushes the footer down */
+  text-align: center;
+}
+.not-found-state h2 { margin: 16px 0 8px; color: #374151; }
+.not-found-state p { color: #6b7280; margin-bottom: 24px; }

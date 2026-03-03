@@ -5,15 +5,12 @@
   min-height: 80vh;
 }
 
-/* Header */
 .dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 40px; gap: 16px; 
 }
-.dashboard-header h1 { margin: 0; font-size: 28px; color: #111827; }
-.dashboard-header p { margin: 4px 0 0; color: #6b7280; }
+.dashboard-header h1 { margin: 0; font-size: 28px; color: #111827; line-height: 1.2; }
+.dashboard-header p { margin: 4px 0 0; color: #6b7280; font-size: 15px; }
 
 /* Grid */
 .listings-grid {
@@ -24,200 +21,107 @@
 
 /* Card */
 .property-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  overflow: hidden;
-  background: white;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;
+  background: white; transition: transform 0.2s, box-shadow 0.2s;
+  display: flex; flex-direction: column;
 }
-
-.property-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-}
+.property-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
 
 /* Image Section */
-.card-image {
-  height: 180px;
-  background: #f3f4f6;
-  position: relative;
-}
-.card-image img {
-  width: 100%; height: 100%; object-fit: cover;
-}
+.card-image { height: 200px; background: #f3f4f6; position: relative; }
+.card-image img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Status Badge */
+/* Image Badges */
 .status-badge {
-  position: absolute; top: 12px; right: 12px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px; font-weight: 600;
-  display: flex; align-items: center; gap: 6px;
-  color: white;
+  position: absolute; top: 12px; right: 12px; padding: 6px 12px;
+  border-radius: 20px; font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px; color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.status-badge.available { background: #10b981; } /* Green */
-.status-badge.rented { background: #6b7280; }    /* Grey */
+.badge-active { background: #10b981; } 
+.badge-rented { background: #f43f5e; }    
+.badge-hidden { background: #64748b; }
 .dot { width: 6px; height: 6px; background: white; border-radius: 50%; }
 
 /* Content Section */
-.card-content { padding: 16px; }
+.card-content { padding: 16px; display: flex; flex-direction: column; flex: 1; }
 
-.header-row {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 8px;
-}
-.header-row h3 { margin: 0; font-size: 16px; font-weight: 600; color: #111827; }
-.price { font-weight: 700; color: #1e3a8a; }
+.header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.header-row h3 { margin: 0; font-size: 16px; font-weight: 600; color: #111827; line-height: 1.3;}
+.price { font-weight: 700; color: #1e3a8a; font-size: 16px; }
 
-.location {
-  display: flex; align-items: center; gap: 4px;
-  color: #6b7280; font-size: 13px; margin: 0 0 12px;
-}
+.location { display: flex; align-items: center; gap: 4px; color: #6b7280; font-size: 13px; margin: 0 0 12px; }
 .location mat-icon { font-size: 16px; width: 16px; height: 16px; }
 
 .stats-row {
-  display: flex; align-items: center;
-  font-size: 13px; color: #374151;
-  background: #f9fafb; padding: 8px; border-radius: 6px;
-  margin-bottom: 16px;
+  display: flex; align-items: center; font-size: 13px; color: #374151;
+  background: #f9fafb; padding: 8px 12px; border-radius: 6px; margin-bottom: auto;
 }
 .divider { margin: 0 8px; color: #d1d5db; }
 
-/* Actions */
+/* --- Modern Action Row --- */
 .action-row {
   display: flex; justify-content: space-between; align-items: center;
-  border-top: 1px solid #f3f4f6;
-  padding-top: 12px;
+  border-top: 1px solid #f3f4f6; padding-top: 16px; margin-top: 16px;
 }
 
-.view-link {
-  color: #6b7280; font-size: 13px; text-decoration: none; font-weight: 500;
-}
-.view-link:hover { text-decoration: underline; color: #1e3a8a; }
+/* 1. Styled Select Chip */
+.status-wrapper { position: relative; display: inline-block; }
 
-.btn-edit {
-  background: #eff6ff; color: #1e3a8a;
-  border: none; padding: 8px 16px; border-radius: 6px;
-  font-size: 13px; font-weight: 600;
-  display: flex; align-items: center; gap: 6px;
-  cursor: pointer; transition: 0.2s;
+.status-wrapper select {
+  appearance: none; -webkit-appearance: none;
+  padding: 8px 32px 8px 16px; 
+  border-radius: 8px; 
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s ease; border: 1px solid transparent;
 }
-.btn-edit:hover { background: #dbeafe; }
-.btn-edit mat-icon { font-size: 16px; width: 16px; height: 16px; }
+.status-wrapper select:focus { outline: none; box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2); }
+
+/* Dynamic Select Colors */
+.select-active { background: #ecfdf5; color: #065f46; border-color: #a7f3d0; }
+.select-rented { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+.select-hidden { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+
+.select-arrow {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; font-size: 20px; height: 20px; width: 20px; color: inherit; opacity: 0.7;
+}
+
+/* 2. Action Icons */
+.btn-group { display: flex; gap: 8px; }
+
+.btn-icon {
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; color: #4b5563; background: white;
+  border: 1px solid #d1d5db; padding: 8px; border-radius: 8px;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-icon mat-icon { font-size: 20px; height: 20px; width: 20px; }
+.btn-icon:hover { background: #f3f4f6; color: #1e3a8a; border-color: #9ca3af; }
 
 /* States */
-.loading-state, .empty-state {
-  text-align: center; padding: 60px 0; color: #6b7280;
-}
+.loading-state, .empty-state { text-align: center; padding: 60px 0; color: #6b7280; }
 .spinner { animation: spin 1s linear infinite; margin-right: 8px; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* Button Styles */
-.btn-primary {
-  background: #1e3a8a; color: white; border: none;
-  padding: 10px 20px; border-radius: 8px; font-weight: 600;
-  display: flex; align-items: center; gap: 8px; cursor: pointer;
-}
-.btn-outline {
-  background: white; border: 1px solid #d1d5db; color: #374151;
-  padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;
-}
-/* --- Action Row Layout --- */
-.action-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid #f0f0f0;
-}
+/* Buttons */
+.btn-primary { background: #1e3a8a; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.btn-outline { background: white; border: 1px solid #d1d5db; color: #374151; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
 
-/* --- 1. Vibrant Status Dropdown --- */
-.status-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.status-wrapper select {
-    appearance: none; /* Hides default browser arrow */
-    -webkit-appearance: none;
-    padding: 8px 32px 8px 16px; /* Extra right padding for custom arrow */
-    border-radius: 20px; /* Pill shape */
-    border: none;
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    /* color: white;  */
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* Custom Arrow Icon */
-.select-arrow {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-    /* color: white; */
-    font-size: 20px;
-    height: 20px;
-    width: 20px;
-}
-
-/* --- THE COLOR PALETTE --- */
-
-/* Active: Vibrant Green/Teal */
-.status-active {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-/* Rented: Strong Red/Rose */
-.status-rented {
-    background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
-}
-
-/* Hidden: Cool Slate/Gray */
-.status-hidden {
-    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
-}
-
-/* Focus state */
-.status-wrapper select:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
-}
-
-/* --- 2. Buttons Styling --- */
-.btn-group {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-icon-text {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #4b5563;
-    background: #f3f4f6;
-    padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-icon-text mat-icon {
-    font-size: 18px;
-    height: 18px;
-    width: 18px;
-}
-
-.btn-icon-text:hover {
-    background: #e5e7eb;
-    color: #111827 !important;
+/* ========================================================
+   MOBILE RESPONSIVENESS (The Magic Fixes)
+======================================================== */
+@media (max-width: 600px) {
+  .page-container { padding: 20px 16px; padding-bottom: 100px; }
+  
+  .dashboard-header { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+  .dashboard-header > div { width: 100%; }
+  .dashboard-header h1 { font-size: 24px; }
+  .dashboard-header .btn-primary { width: 100%; justify-content: center; padding: 12px; }
+  
+  /* Force single column full-width grid on mobile */
+  .listings-grid { grid-template-columns: 1fr; gap: 16px; }
+  
+  /* Make image slightly taller on mobile */
+  .card-image { height: 220px; }
 }

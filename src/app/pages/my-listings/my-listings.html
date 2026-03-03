@@ -28,8 +28,7 @@
             <div class="card-image">
                 <img [src]="(prop.photos && prop.photos.length > 0) ? prop.photos[0].photoUrl : 'assets/placeholder.jpg'"
                     alt="Home">
-
-                <div class="status-badge" [ngClass]="'status-' + getStatusLabel(prop.isRented).toLowerCase()">
+                <div class="status-badge" [ngClass]="'badge-' + getStatusLabel(prop.isRented).toLowerCase()">
                     <span class="dot"></span> {{ getStatusLabel(prop.isRented) | titlecase }}
                 </div>
             </div>
@@ -53,25 +52,22 @@
                 </div>
 
                 <div class="action-row">
-
+                    
                     <div class="status-wrapper">
                         <select [value]="prop.isRented" (change)="changeStatus(prop, $event)"
-                            [ngClass]="'status-' + getStatusLabel(prop.isRented).toLowerCase()">
-
+                            [ngClass]="'select-' + getStatusLabel(prop.isRented).toLowerCase()">
                             <option [value]="0">Active</option>
                             <option [value]="1">Rented</option>
                             <option [value]="2">Hidden</option>
                         </select>
-
-                        <mat-icon class="select-arrow">arrow_drop_down</mat-icon>
+                        <mat-icon class="select-arrow">expand_more</mat-icon>
                     </div>
 
                     <div class="btn-group">
-                        <a [routerLink]="['/property-details', prop.id]" class="btn-icon-text">
+                        <a [routerLink]="['/property-details', prop.id]" class="btn-icon" title="View Property">
                             <mat-icon>visibility</mat-icon>
                         </a>
-
-                        <button class="btn-icon-text" (click)="editProperty(prop.id)">
+                        <button class="btn-icon" (click)="editProperty(prop.id)" title="Edit Property">
                             <mat-icon>edit</mat-icon>
                         </button>
                     </div>
