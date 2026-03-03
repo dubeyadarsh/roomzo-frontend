@@ -9,9 +9,11 @@ import { authGuard } from './auth.guard';
 import { LoginComponent } from './pages/login/login';
 import { MyListingsComponent } from './pages/my-listings/my-listings';
 import { EditListingComponent } from './pages/edit-listing/edit-listing';
+import { OwnerAuthComponent } from './pages/owner-auth/owner-auth';
 
 export const routes: Routes = [
 	{ path: 'login', component: LoginComponent },
+	{ path: 'owner-login', component: OwnerAuthComponent },
 	{ path: '', component: HomeComponent },
 	{ path: 'list', component: ListPropertyComponent,canActivate: [authGuard] },
 	{ path: 'about', component: AboutComponent },

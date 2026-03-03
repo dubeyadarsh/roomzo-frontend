@@ -21,8 +21,43 @@ export class HeaderComponent implements OnInit {
 
   // Inject AuthService
   constructor(private router: Router, private authService: AuthService) {}
+private checkAndClearExpiredStorage() {
+    const loginTime = localStorage.getItem('loginTimestamp');
+    
+    if (loginTime) {
+      // 10 Days in milliseconds
+      const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
+      const timeElapsed = Date.now() - parseInt(loginTime, 10);
 
+      if (timeElapsed >= TEN_DAYS) {
+        // Data has expired! Clean it up.
+        localStorage.removeItem('ownerVerifiedwWIthOtp');
+        localStorage.removeItem('loginTimestamp');
+        localStorage.removeItem('ownerEmail'); 
+        localStorage.removeItem('ownerUser'); 
+
+     
+      
+      }
+    }
+
+    //check for basic user
+    const userLoginTime = localStorage.getItem('userloginTimestamp');
+    
+    if (userLoginTime) {
+      // 1 Day in milliseconds
+      const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+      const timeElapsed = Date.now() - parseInt(userLoginTime, 10); 
+      
+      if (timeElapsed >= ONE_DAY) {
+        localStorage.removeItem('userVerifiedwWIthOtp');
+        localStorage.removeItem('userloginTimestamp');
+        localStorage.removeItem('userEmail');
+      }
+    }
+  }
   ngOnInit() {
+    this.checkAndClearExpiredStorage();
     // === THE FIX ===
     // Subscribe to the "Live" login status
     this.authService.isLoggedIn$.subscribe((status) => {
@@ -56,4 +91,5 @@ export class HeaderComponent implements OnInit {
     this.isMenuOpen = false;
     this.router.navigate(['/']);
   }
+  
 }

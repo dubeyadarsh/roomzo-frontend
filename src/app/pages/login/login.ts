@@ -78,7 +78,7 @@ export class LoginComponent {
           console.log('Login Success:', res);
           
           // Save Session (Updated to store email)
-          this.authService.saveSession(this.email, res.data.user);
+          this.authService.saveSessionForSeeingOwnerDetails(this.email);
           
           this.toastr.success('Login Successful', 'Welcome');
           this.router.navigateByUrl(this.returnUrl);

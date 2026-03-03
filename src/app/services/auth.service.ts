@@ -35,14 +35,21 @@ export class AuthService {
 
   // --- Session Management ---
 
-  saveSession(email: string, user: any) {
+  saveSession(user: any) {
     localStorage.setItem('ownerVerifiedwWIthOtp', 'true');
-    localStorage.setItem('ownerEmail', email); // Changed from mobile to email
+    localStorage.setItem('ownerEmail', user.email); // Changed from mobile to email
     localStorage.setItem('ownerUser', JSON.stringify(user));
     localStorage.setItem('loginTimestamp', Date.now().toString());
 
     // 4. NOTIFY SUBSCRIBERS (Header will update immediately)
     this.isLoggedInSubject.next(true);
+  }
+  saveSessionForSeeingOwnerDetails(email: string) {
+    localStorage.setItem('userVerifiedwWIthOtp', 'true');
+    localStorage.setItem('userEmail', email); // Changed from mobile to email
+    localStorage.setItem('userloginTimestamp', Date.now().toString());
+
+
   }
 
   logout() {
@@ -71,4 +78,24 @@ export class AuthService {
   sendContactForm(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/contact/send`, data);
   }
+  loginOwner(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/auth/login-password`, payload);
+  }
+
+  // sendOtp(phoneOrEmail: string): Observable<any> {
+  //   return this.http.post('/api/auth/send-otp', { phone: phoneOrEmail });
+  // }
+
+  completeRegistration(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/auth/register-complete`, payload);
+  }
+  forgotPasswordInit(identifier: string) {
+    return this.http.post<any>(`${this.baseUrl}/api/auth/forgot-password-init`, { identifier });
+  }
+
+  resetPassword(payload: any) {
+    return this.http.post<any>(`${this.baseUrl}/api/auth/reset-password`, payload);
+  }
+ 
+
 }

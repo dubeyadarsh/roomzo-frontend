@@ -102,7 +102,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
 
   // --- NEW: Auth Logic & Popup Trigger ---
   contactAgent() {
-    if (this.isUserLoggedIn()) {
+    if (this.isUserLoggedIn() || this.isOwnerLoggedIn()) {
       this.openContactModal();
     } else {
       // Redirect to Login with return URL that includes '?showContact=true'
@@ -113,6 +113,17 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   }
 
   isUserLoggedIn(): boolean {
+    const isVerified = localStorage.getItem('userVerifiedwWIthOtp');
+    const loginTime = localStorage.getItem('userloginTimestamp');
+    const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
+
+    if (isVerified === 'true' && loginTime) {
+      const timeElapsed = Date.now() - parseInt(loginTime, 10);
+      return timeElapsed < ONE_DAY;
+    }
+    return false;
+  }
+  isOwnerLoggedIn(): boolean {
     const isVerified = localStorage.getItem('ownerVerifiedwWIthOtp');
     const loginTime = localStorage.getItem('loginTimestamp');
     const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
@@ -123,7 +134,6 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
     }
     return false;
   }
-
   checkReturnFromLogin() {
     // Check query params for 'showContact'
     const params = this.route.snapshot.queryParams;

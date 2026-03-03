@@ -20,5 +20,5 @@ export const authGuard: CanActivateFn = (route, state) => {
 
   // If not verified or expired, redirect to login
   // We pass the returnUrl so we can go back after logging in
-  return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } });
+  return router.createUrlTree(['/owner-login'], { queryParams: { returnUrl: state.url } });
 };
