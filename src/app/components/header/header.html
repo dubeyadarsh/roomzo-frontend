@@ -15,24 +15,55 @@
       <app-search-bar></app-search-bar>
 
       <div class="auth-desktop">
-        <div *ngIf="isLoggedIn" class="profile-menu">
+        <div class="profile-menu">
           <button class="profile-btn" (click)="toggleMenu()">
-            <div class="avatar-circle">U</div> <mat-icon>expand_more</mat-icon>
+            <ng-container *ngIf="isLoggedIn; else guestIcon">
+              <div class="avatar-circle">U</div>
+            </ng-container>
+            <ng-template #guestIcon>
+              <mat-icon style="color: #6b7280;">account_circle</mat-icon>
+            </ng-template>
+            <mat-icon>expand_more</mat-icon>
           </button>
 
           <div class="dropdown" *ngIf="isMenuOpen">
-            <div class="user-info">
-              <strong>Your Account</strong>
-              <span>{{ userMobile }}</span>
-            </div>
-            <div class="divider"></div>
-            <a routerLink="/my-listings" class="menu-item" (click)="closeMenu()">
-              <mat-icon>edit_note</mat-icon> Manage Listings
-            </a>
-            <div class="divider"></div>
-            <button class="menu-item logout" (click)="logout()">
-              <mat-icon>logout</mat-icon> Logout
-            </button>
+            
+            <ng-container *ngIf="isLoggedIn">
+              <div class="user-info">
+                <strong>Your Account</strong>
+                <span>{{ userMobile }}</span>
+              </div>
+              <div class="divider"></div>
+              
+              <a routerLink="/my-listings" class="menu-item" (click)="closeMenu()">
+                <mat-icon>edit_note</mat-icon> Manage Listings
+              </a>
+              <a routerLink="/search-listing" class="menu-item" (click)="closeMenu()">
+                <mat-icon>favorite_border</mat-icon> Saved Properties
+              </a>
+              
+              <div class="divider"></div>
+              <button class="menu-item logout" (click)="logout()">
+                <mat-icon>logout</mat-icon> Logout
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="!isLoggedIn">
+              <div class="user-info">
+                <strong>Welcome to RoomZo!</strong>
+                <span>Sign in to manage your properties</span>
+              </div>
+              
+              <a routerLink="/owner-login" class="menu-item primary-action" (click)="closeMenu()">
+                <mat-icon>login</mat-icon> Login / Register
+              </a>
+              
+              <div class="divider"></div>
+              <a [routerLink]="['/']" fragment="contactUs" class="menu-item" (click)="closeMenu()">
+                <mat-icon>help_outline</mat-icon> Help & Support
+              </a>
+            </ng-container>
+
           </div>
         </div>
       </div>
@@ -69,20 +100,47 @@
   </a>
 </nav>
 
-<div class="mobile-dropdown-overlay" *ngIf="isMenuOpen && isLoggedIn">
+<div class="mobile-dropdown-overlay" *ngIf="isMenuOpen">
   <div class="overlay-backdrop" (click)="closeMenu()"></div>
   <div class="mobile-dropdown">
-    <div class="user-info">
-      <strong>Your Account</strong>
-      <span>{{ userMobile }}</span>
-    </div>
-    <div class="divider"></div>
-    <a routerLink="/my-listings" class="menu-item" (click)="closeMenu()">
-      <mat-icon>edit_note</mat-icon> Manage Listings
-    </a>
-    <div class="divider"></div>
-    <button class="menu-item logout" (click)="logout()">
-      <mat-icon>logout</mat-icon> Logout
-    </button>
+    
+    <ng-container *ngIf="isLoggedIn">
+      <div class="user-info">
+        <strong>Your Account</strong>
+        <span>{{ userMobile }}</span>
+      </div>
+      <div class="divider"></div>
+      
+      <a routerLink="/my-listings" class="menu-item" (click)="closeMenu()">
+        <mat-icon>edit_note</mat-icon> Manage Listings
+      </a>
+      
+      <!-- <a routerLink="/search-listing" class="menu-item" (click)="closeMenu()">
+        <mat-icon>favorite_border</mat-icon> Saved Properties
+      </a>
+       -->
+      <div class="divider"></div>
+      <button class="menu-item logout" (click)="logout()">
+        <mat-icon>logout</mat-icon> Logout
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoggedIn">
+      <div class="user-info">
+        <strong>Welcome to RoomZo!</strong>
+        <span>Sign in to manage your properties</span>
+      </div>
+      
+      <a routerLink="/owner-login" class="menu-item primary-action" (click)="closeMenu()">
+        <mat-icon>login</mat-icon> Login / Register
+      </a>
+      
+      <div class="divider"></div>
+      
+      <a [routerLink]="['/']" fragment="contactUs" class="menu-item" (click)="closeMenu()">
+        <mat-icon>help_outline</mat-icon> Help & Support
+      </a>
+    </ng-container>
+
   </div>
 </div>

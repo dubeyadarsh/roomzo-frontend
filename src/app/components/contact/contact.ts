@@ -22,7 +22,7 @@ export class ContactComponent {
     { 
       icon: 'phone', 
       title: 'Phone', 
-      content: '+91 72378 83145', 
+      content: '+91 9250 782268', 
       sub: '' 
     },
     { 

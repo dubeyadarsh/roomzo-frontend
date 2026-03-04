@@ -255,3 +255,24 @@
     to { transform: translateY(0); opacity: 1; } 
   }
 }
+/* --- Special Action Button for Menu --- */
+.menu-item.primary-action {
+  color: white;
+  background: #1e3a8a;
+  border-radius: 8px;
+  margin: 8px 16px;
+  width: calc(100% - 32px);
+  justify-content: center;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.menu-item.primary-action:hover {
+  background: #172554;
+  color: white;
+}
+
+.menu-item.primary-action:active {
+  transform: scale(0.98);
+}
