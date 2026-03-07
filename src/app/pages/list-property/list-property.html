@@ -42,7 +42,19 @@
             </label>
           </div>
 
-          <h2 class="subsection-title move-down">Property Location</h2>
+         <h2 class="subsection-title move-down">Property Location</h2>
+          
+          <div class="map-picker-container">
+            <div class="map-header">
+              <p class="input-helper">Pinpoint your exact location on the map.</p>
+              <button type="button" class="btn-outline btn-small" (click)="detectLocation()">
+                <mat-icon>my_location</mat-icon> Detect My Location
+              </button>
+            </div>
+            
+            <div id="propertyMap" class="property-map"></div>
+          </div>
+
           <div formGroupName="address">
             <div class="property-type-grid" style="margin-top: 16px; grid-template-columns: 1fr 1fr ;">
               <div class="input-group">
@@ -57,17 +69,11 @@
             <div class="property-type-grid" style="margin-top: 16px; grid-template-columns: 2fr 1fr 1fr;">
               <div class="input-group" style="margin-top:0;">
                 <label class="input-label">State</label>
-                <select formControlName="state">
-                  <option value="">Select State</option>
-                  <option *ngFor="let state of states" [value]="state.name">{{ state.name }}</option>
-                </select>
+                <input type="text" formControlName="state" placeholder="State">
               </div>
               <div class="input-group" style="margin-top:0;">
                 <label class="input-label">City</label>
-                <select formControlName="city">
-                  <option value="">Select City</option>
-                  <option *ngFor="let city of cities" [value]="city.name">{{ city.name }}</option>
-                </select>
+                <input type="text" formControlName="city" placeholder="City">
               </div>
               <div class="input-group" style="margin-top:0;">
                 <label class="input-label">Zip Code</label>

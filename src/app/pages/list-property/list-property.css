@@ -1,4 +1,5 @@
 /* --- CSS Variables for easy theming --- */
+@import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
 :host {
   --primary-blue: #1e3a8a;       /* Dark Blue */
   --primary-blue-light: #eff6ff; /* Light Blue Background */
@@ -543,4 +544,39 @@ input:focus, textarea:focus { outline: 2px solid var(--primary-blue); border-col
 .btn-dashed:hover {
   border-color: var(--primary-blue);
   background: var(--primary-blue-light);
+}
+/* --- Map Picker Styles --- */
+.map-picker-container {
+  margin-top: 16px;
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  background: var(--bg-white);
+}
+
+.map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+}
+
+.property-map {
+  height: 300px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  z-index: 1; /* Prevents Leaflet from overlapping navbars */
+}
+.property-map img.leaflet-tile {
+  max-width: none !important;
+  max-height: none !important;
+  width: 256px !important;
+  height: 256px !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }

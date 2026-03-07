@@ -83,9 +83,13 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
           
           // EXTRACT OWNER NAME HERE
           this.ownerName = response.ownerName || 'Property Owner';
-          
+          if (this.property.guidebook && Array.isArray(this.property.guidebook.rules)) {
+            this.property.guidebook.rules = this.property.guidebook.rules.filter(
+              (r: any) => (r && r.ruleText) || (typeof r === 'string' && r.trim() !== '')
+            );
+          }
           this.mapAmenities(this.property);
-          this.loadMapCoordinates(this.property.city, this.property.state);
+          this.loadMapCoordinates(this.property);
           this.checkReturnFromLogin();
         } else {
             this.toastr.warning('Property data not found', 'Not Found');
@@ -181,9 +185,23 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   closeContactModal() {
     this.showContactModal = false;
   }
+loadMapCoordinates(property: any) {
+  // 1. Primary: If we have exact coordinates, use them immediately (No API call needed!)
+  if (property.latitude && property.longitude) {
+    const lat = property.latitude;
+    const lon = property.longitude;
+    const offset = 0.02; 
+    const bbox = `${Number(lon)-offset},${Number(lat)-offset},${Number(lon)+offset},${Number(lat)+offset}`;
+    const rawUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
+    
+    this.mapUrl = this.sanitizer.bypassSecurityTrustResourceUrl(rawUrl);
+    this.cd.detectChanges();
+    return; // Exit the function early
+  }
 
-  loadMapCoordinates(city: string, state: string) {
-    this.propertyService.getGeocode(city, state).subscribe({
+  // 2. Fallback: Geocode the City/State if no exact coordinates exist
+  if (property.city && property.state) {
+    this.propertyService.getGeocode(property.city, property.state).subscribe({
       next: (results: any[]) => {
         if (results && results.length > 0) {
           const location = results[0];
@@ -200,6 +218,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
       error: () => this.toastr.warning('Could not load map location', 'Map Error')
     });
   }
+}
 
   shareProperty() {
     const currentUrl = window.location.href;
@@ -252,4 +271,40 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
   formatPrice(price: number): string {
     return '₹' + (price ? price.toLocaleString() : '0');
   }
+  // Add this anywhere inside the PropertyDetailsComponent class
+
+openGoogleMaps(): void {
+  if (!this.property) return;
+
+  let destination = '';
+
+  // 1. Exact Coordinates (Most accurate)
+  if (this.property.latitude && this.property.longitude) {
+    destination = `${this.property.latitude},${this.property.longitude}`;
+  } 
+  // 2. Fallback: Address String
+  else if (this.property.city || this.property.street) {
+    const addressParts = [
+      this.property.street,
+      this.property.landmark,
+      this.property.city,
+      this.property.state,
+      this.property.zipCode
+    ];
+
+    // Filter out null/empty strings and join safely
+    destination = encodeURIComponent(
+      addressParts.filter(part => part && String(part).trim() !== '').join(', ')
+    );
+  }
+
+  // 3. Launch Google Maps Directions
+  if (destination) {
+    // CORRECTED URL FORMAT:
+    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+    window.open(googleMapsUrl, '_blank');
+  } else {
+    this.toastr.warning('Location details are not available for this property.', 'Location Unavailable');
+  }
+}
 }

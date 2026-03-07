@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,7 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { PropertyService } from '../../services/property.service';
 import { Country, State, City } from 'country-state-city';
 import { ToastrService } from 'ngx-toastr';
-
+import * as L from 'leaflet';
+import { HttpClient } from '@angular/common/http'; // Make sure to inject this
 @Component({
   selector: 'app-list-property',
   standalone: true,
@@ -20,7 +21,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './list-property.html',
   styleUrls: ['./list-property.css']
 })
-export class ListPropertyComponent implements OnInit {
+export class ListPropertyComponent implements OnInit,AfterViewInit {
   listingForm: FormGroup = new FormGroup({});
   currentStep = 1;
   totalSteps = 4; // Increased to 4
@@ -70,8 +71,10 @@ export class ListPropertyComponent implements OnInit {
     private propertyService: PropertyService, 
     private cd: ChangeDetectorRef,
     private toastr: ToastrService,
+    private http: HttpClient
   ) {}
-
+private map: L.Map | undefined;
+private marker: L.Marker | undefined;
   ngOnInit(): void {
     this.listingForm = this.fb.group({
       details: this.fb.group({
@@ -84,7 +87,9 @@ export class ListPropertyComponent implements OnInit {
           city: ['', Validators.required],
           landmark: ['', Validators.required],
           state: ['', Validators.required],
-          zip: ['', Validators.required]
+          zip: ['', Validators.required],
+          latitude: [null],  // NEW
+          longitude: [null]
         })
       }),
       amenities: this.fb.group({
@@ -117,8 +122,16 @@ export class ListPropertyComponent implements OnInit {
       this.cities = this.selectedStateIso ? City.getCitiesOfState('IN', this.selectedStateIso) : [];
       this.detailsGroup.get('address.city')?.reset();
     });
+  this.fixLeafletIcons();
   }
-
+ngAfterViewInit(): void {
+    // This guarantees the HTML div is physically on the screen before Leaflet tries to draw
+    setTimeout(() => {
+      if (this.currentStep === 1) {
+        this.initMap();
+      }
+    }, 100);
+  }
   // Getters
   get detailsGroup(): FormGroup { return this.listingForm.get('details') as FormGroup; }
   get amenitiesGroup(): FormGroup { return this.listingForm.get('amenities') as FormGroup; }
@@ -369,4 +382,111 @@ private async watermarkImage(file: File): Promise<File> {
       reader.readAsDataURL(file);
     });
   }
+  private fixLeafletIcons() {
+  const iconRetinaUrl = 'assets/marker-icon-2x.png';
+  const iconUrl = 'assets/marker-icon.png';
+  const shadowUrl = 'assets/marker-shadow.png';
+  const iconDefault = L.icon({
+    iconRetinaUrl,
+    iconUrl,
+    shadowUrl,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41]
+  });
+  L.Marker.prototype.options.icon = iconDefault;
+}
+
+private initMap(): void {
+  const defaultLat = 20.5937;
+  const defaultLng = 78.9629;
+
+  // Make sure to destroy the old map instance if it exists (useful for Step navigation)
+  if (this.map) {
+    this.map.remove();
+  }
+
+  this.map = L.map('propertyMap').setView([defaultLat, defaultLng], 5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(this.map);
+
+  this.map.on('click', (e: any) => {
+    const lat = e.latlng.lat;
+    const lng = e.latlng.lng;
+    this.setMarkerAndAddress(lat, lng);
+  });
+
+  // THE FIX: Force Leaflet to recalculate its container size after 500ms
+  setTimeout(() => {
+    if (this.map) {
+      this.map.invalidateSize();
+    }
+  }, 500);
+}
+// 4. Handle Geolocation (Auto-detect)
+detectLocation(): void {
+  if (navigator.geolocation) {
+    this.toastr.info('Detecting location...', 'Please wait');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        
+        if (this.map) {
+          this.map.setView([lat, lng], 16);
+        }
+        this.setMarkerAndAddress(lat, lng);
+        this.toastr.success('Location detected!');
+      },
+      (error) => {
+        this.toastr.error('Could not detect location. Please pick on the map.');
+      }
+    );
+  } else {
+    this.toastr.error('Geolocation is not supported by your browser.');
+  }
+}
+
+// 5. Place Marker and Reverse Geocode Address
+private setMarkerAndAddress(lat: number, lng: number): void {
+  if (this.marker) {
+    this.marker.setLatLng([lat, lng]);
+  } else if (this.map) {
+    this.marker = L.marker([lat, lng]).addTo(this.map);
+  }
+
+  // Update Form payload with coordinates
+  this.detailsGroup.get('address')?.patchValue({
+    latitude: lat,
+    longitude: lng
+  });
+
+  // Call free OpenStreetMap API to get address details
+  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+  
+  this.http.get<any>(url).subscribe(res => {
+    if (res && res.address) {
+      console.log("response from map",res)
+      const addr = res.address;
+      
+      // Attempt to map OSM response to our form fields
+      const city = addr.city || addr.town || addr.village || addr.county || '';
+      const state = addr.state || '';
+      const zip = addr.postcode || '';
+      const street = addr.road || addr.suburb || '';
+      const landmark =addr.county || addr.neighbourhood || ''; 
+      this.detailsGroup.get('address.state')?.patchValue(state);
+      this.detailsGroup.get('address')?.patchValue({
+        city: city,
+        zip: zip,
+        street: street,
+        landmark: landmark
+      });
+    }
+  });
+}
 }

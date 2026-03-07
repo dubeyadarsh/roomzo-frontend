@@ -133,7 +133,7 @@
                   <span class="place-name">{{ place.name }}</span>
                   <span class="place-type">{{ place.type | titlecase }}</span>
                 </div>
-                <div class="place-dist">{{ place.distance }} <span *ngIf="!place.distance?.includes('km') && !place.distance?.includes('mi')">km</span></div>
+                <div class="place-dist">{{ place.distance }}</div>
               </div>
             </div>
           </div>
@@ -143,8 +143,18 @@
       <div class="divider"></div>
 
       <section class="info-block">
-        <h2>Where you'll be</h2>
-        <p style="margin-bottom: 12px;">{{ property.city }}, {{ property.state }}</p>
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px;">
+          <div>
+            <h2 style="margin-bottom: 4px;">Where you'll be</h2>
+            <p style="margin-bottom: 0;">{{ property.city }}, {{ property.state }}</p>
+          </div>
+          
+          <button class="btn-outline" (click)="openGoogleMaps()" *ngIf="property.latitude || property.city">
+            <mat-icon style="color: #1a73e8;">directions</mat-icon> 
+            Navigate
+          </button>
+        </div>
+
         <div class="map-container" style="height: 300px; width: 100%; border-radius: 12px; overflow: hidden; background: #eee;">
           <iframe *ngIf="mapUrl" width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" [src]="mapUrl" style="border: 0;"></iframe>
           <div *ngIf="!mapUrl" style="height: 100%; display: flex; align-items: center; justify-content: center; color: #888;">
@@ -152,6 +162,7 @@
           </div>
         </div>
       </section>
+      
     </div>
 
     <div class="sidebar-column">
