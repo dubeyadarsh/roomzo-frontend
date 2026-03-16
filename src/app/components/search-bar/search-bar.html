@@ -21,22 +21,22 @@
   <div class="divider hide-mobile"></div>
 
   <div class="filter-group">
-    <mat-select class="custom-mat-select" placeholder="Property Type" panelClass="custom-select-panel">
-      <mat-option value="pg">PG / Room</mat-option>
-      <mat-option value="1bhk">1 BHK</mat-option>
-      <mat-option value="2bhk">2 BHK</mat-option>
-      <mat-option value="3bhk">3+ BHK</mat-option>
+    <mat-select class="custom-mat-select" [formControl]="propertyTypeControl" placeholder="Property Type" panelClass="custom-select-panel">
+      <mat-option value="Any">Any Type</mat-option>
+      <mat-option value="Flat">Flat</mat-option>
+      <mat-option value="PG">PG</mat-option>
+      <mat-option value="Room">Room</mat-option>
     </mat-select>
   </div>
 
   <div class="divider hide-mobile"></div>
 
   <div class="filter-group">
-    <mat-select class="custom-mat-select" placeholder="Budget" panelClass="custom-select-panel">
-      <mat-option value="0-5000">Up to ₹5k</mat-option>
-      <mat-option value="5000-10000">₹5k - ₹10k</mat-option>
-      <mat-option value="10000-20000">₹10k - ₹20k</mat-option>
-      <mat-option value="20000+">₹20k+</mat-option>
+    <mat-select class="custom-mat-select" [formControl]="budgetControl" placeholder="Budget" panelClass="custom-select-panel">
+      <mat-option [value]="50000">Any (Up to ₹50k)</mat-option>
+      <mat-option [value]="5000">Up to ₹5k</mat-option>
+      <mat-option [value]="10000">Up to ₹10k</mat-option>
+      <mat-option [value]="20000">Up to ₹20k</mat-option>
     </mat-select>
   </div>
 

@@ -54,8 +54,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
     private toastr: ToastrService,
     private authService: AuthService
   ) {}
-
-  ngOnInit(): void {
+ngOnInit(): void {
     this.routeSub = this.route.paramMap.pipe(
       tap(() => {
         this.isLoading = true;
@@ -73,7 +72,7 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
             throw new Error('No ID');
         }
         
-        this.loadSuggestions(this.currentId);
+        // REMOVED old loadSuggestions() call from here
         return this.propertyService.getListingById(this.currentId);
       })
     ).subscribe({
@@ -81,7 +80,6 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
         if (response.status === 1 && response.data) {
           this.property = response.data;
           
-          // EXTRACT OWNER NAME HERE
           this.ownerName = response.ownerName || 'Property Owner';
           if (this.property.guidebook && Array.isArray(this.property.guidebook.rules)) {
             this.property.guidebook.rules = this.property.guidebook.rules.filter(
@@ -91,6 +89,10 @@ export class PropertyDetailsComponent implements OnInit, OnDestroy {
           this.mapAmenities(this.property);
           this.loadMapCoordinates(this.property);
           this.checkReturnFromLogin();
+
+          // NEW: Now that we have the property, find its nearest neighbors!
+          this.loadSuggestions(this.property);
+
         } else {
             this.toastr.warning('Property data not found', 'Not Found');
         }
@@ -243,22 +245,36 @@ loadMapCoordinates(property: any) {
     if (this.routeSub) this.routeSub.unsubscribe();
   }
   
-  loadSuggestions(currentId: string) {
-    const storedLocation = localStorage.getItem('user_location');
-    let apiCall = storedLocation 
-        ? this.propertyService.searchListingsWithFilters(JSON.parse(storedLocation).state, JSON.parse(storedLocation).city, 0, 4, undefined, false)
-        : this.propertyService.getAllListingsWithFilters(0, 4, undefined, false);
+ loadSuggestions(property: any) {
+    // 1. Build the filter using the CURRENT property's exact coordinates
+    const filters: any = {};
+    
+    if (property.latitude && property.longitude) {
+      filters.lat = property.latitude;
+      filters.lng = property.longitude;
+    } else if (property.city && property.state) {
+      // Fallback if property has no map pin
+      filters.city = property.city;
+      filters.state = property.state;
+    }
 
-    apiCall.subscribe({
-        next: (res: any) => {
-            if (res.listings) {
-                let filtered = res.listings.filter((p: any) => String(p.id) !== String(currentId));
-                if (filtered.length > 3) filtered.splice(Math.floor(Math.random() * filtered.length), 1);
-                this.similarProperties = filtered;
-                this.cd.detectChanges();
-            }
-        },
-        error: () => console.warn('Failed to load similar properties')
+    // 2. Fetch the top 4 nearest properties (isRented = false so we only suggest available ones)
+    this.propertyService.searchListingsWithFilters(0, 4, filters, false).subscribe({
+      next: (res: any) => {
+        if (res.listings) {
+          // Filter out the exact property we are currently viewing
+          let filtered = res.listings.filter((p: any) => String(p.id) !== String(property.id));
+          
+          // Keep exactly 3 to fill the UI beautifully
+          if (filtered.length > 3) {
+            filtered = filtered.slice(0, 3);
+          }
+          
+          this.similarProperties = filtered;
+          this.cd.detectChanges();
+        }
+      },
+      error: () => console.warn('Failed to load similar properties')
     });
   }
 

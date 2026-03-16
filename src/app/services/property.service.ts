@@ -149,40 +149,8 @@ export class PropertyService {
     return this.http.get(`${this.baseUrl}/listings/allWithFilters`, { params });
   }
 
-  // 2. Search by Location (City/State + Filters)
-  searchListingsWithFilters(state: string, city: string, page: number, size: number, filters?: ListingFilter, isRented?: boolean): Observable<any> {
-    let params = this.buildParams(page, size, filters, isRented);
-    console.log('Search Listings with Filters - Params before location:', params.toString());
-    // Append Location
-    params = params.set('state', state);
-    params = params.set('city', city);
 
-    return this.http.get(`${this.baseUrl}/listings/searchWithFilters`, { params });
-  }
 
-  // Helper to construct query params
-  private buildParams(page: number, size: number, filters?: ListingFilter, isRented?: boolean): HttpParams {
-    let params = new HttpParams()
-      .set('page', page)
-      .set('size', size);
-
-    if (isRented !== undefined) {
-      params = params.set('isRented', isRented);
-    }
-
-    if (filters) {
-      if (filters.minPrice) params = params.set('minPrice', filters.minPrice);
-      if (filters.maxPrice) params = params.set('maxPrice', filters.maxPrice);
-      if (filters.propertyType && filters.propertyType !== 'Any') params = params.set('propertyType', filters.propertyType);
-      
-      // Handle "2+" or "3+" by stripping the '+' if backend expects a number
-      if (filters.bedrooms && filters.bedrooms !== 'Any') {
-         const bedVal = filters.bedrooms.toString().replace('+', '');
-         params = params.set('bedrooms', bedVal);
-      }
-    }
-    return params;
-  }
   getListingById(id: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/listings/${id}`);
   }
@@ -212,4 +180,51 @@ return this.http.get(`${this.baseUrl}/listings/owner/${ownerId}`);
     params: { status: status }
   });
 }
+searchListingsWithFilters(page: number, size: number, filters?: ListingFilter, isRented?: boolean): Observable<any> {
+    let params = this.buildParams(page, size, filters, isRented);
+    return this.http.get(`${this.baseUrl}/listings/searchWithFilters`, { params });
+  }
+
+  private buildParams(page: number, size: number, filters?: ListingFilter, isRented?: boolean): HttpParams {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('size', size);
+
+    if (isRented !== undefined) {
+      params = params.set('isRented', isRented);
+    }
+
+    if (filters) {
+      if (filters.minPrice) params = params.set('minPrice', filters.minPrice);
+      if (filters.maxPrice) params = params.set('maxPrice', filters.maxPrice);
+      if (filters.propertyType && filters.propertyType !== 'Any') params = params.set('propertyType', filters.propertyType);
+      
+      if (filters.bedrooms && filters.bedrooms !== 'Any') {
+         const bedVal = filters.bedrooms.toString().replace('+', '');
+         params = params.set('bedrooms', bedVal);
+      }
+
+      // Geo-spatial sorting parameters
+      if (filters.lat) params = params.set('lat', filters.lat);
+      if (filters.lng) params = params.set('lng', filters.lng);
+      
+      // Fallback location parameters if Lat/Lng fail
+      if (filters.city) params = params.set('city', filters.city);
+      if (filters.state) params = params.set('state', filters.state);
+    }
+    
+    return params;
+  }
+}
+
+export interface ListingFilter {
+  minPrice?: number;
+  maxPrice?: number;
+  propertyType?: string;
+  bedrooms?: string | number;
+  searchQuery?: string; 
+  lat?: number;   // NEW: Latitude for distance sorting
+  lng?: number;   // NEW: Longitude for distance sorting
+  city?: string;  // NEW: Fallback city name
+  state?: string; // NEW: Fallback state name
 }

@@ -79,27 +79,42 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
       }
     });
 
-    // 3. LISTEN FOR QUERY PARAMS (The Magic Link)
+    // 3. LISTEN FOR QUERY PARAMS FROM HOME PAGE
     this.route.queryParams.subscribe(params => {
-      if (params['city'] && params['state']) {
-        const city = params['city'];
-        const state = params['state'];
+      
+      // If there are parameters in the URL, apply them to our local filters
+      if (Object.keys(params).length > 0) {
+        
+        // A. Handle Location (City, State, Lat, Lng)
+        if (params['city'] && params['state']) {
+          const city = params['city'];
+          const state = params['state'];
+          this.selectedLocation = { city, state };
+          this.searchControl.setValue(`${city}, ${state}`, { emitEvent: false });
+          
+          this.filters.city = city;
+          this.filters.state = state;
+        }
 
-        // A. Set the internal location object
-        this.selectedLocation = { city, state };
+        if (params['lat'] && params['lng']) {
+          this.filters.lat = Number(params['lat']);
+          this.filters.lng = Number(params['lng']);
+        }
 
-        // B. Update the visual input text (without triggering valueChanges logic if possible)
-        // We set it as a string so the user sees "Mumbai, Maharashtra"
-        this.searchControl.setValue(`${city}, ${state}`, { emitEvent: false });
+        // B. Handle Property Type Dropdown
+        if (params['propertyType']) {
+          this.filters.propertyType = params['propertyType'];
+        }
 
-        // C. Load data immediately
-        this.loadListings();
-      } else {
-        // If no params, just load default data
-        this.loadListings();
+        // C. Handle Max Price Dropdown
+        if (params['maxPrice']) {
+          this.filters.maxPrice = Number(params['maxPrice']);
+        }
       }
+
+      // Automatically fetch listings with whatever filters we gathered
+      this.loadListings();
     });
-    
   }
 
   // 3. Cleanup on component destroy
@@ -129,68 +144,57 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
     const cityData = event.option.value;
     const stateName = this.getStateName(cityData.stateCode);
 
-    this.selectedLocation = {
-      city: cityData.name,
-      state: stateName
-    };
+    // Extract exact coordinates from the country-state-city library
+    this.filters.lat = cityData.latitude ? Number(cityData.latitude) : undefined;
+    this.filters.lng = cityData.longitude ? Number(cityData.longitude) : undefined;
+    
+    // Set fallback names just in case backend needs them
+    this.filters.city = cityData.name;
+    this.filters.state = stateName;
+
+    this.selectedLocation = { city: cityData.name, state: stateName };
     this.applyFilters();
   }
 
-  // --- Main Data Loading (UPDATED) ---
   loadListings(): void {
-    // 4. Cancel any previous running request!
     if (this.searchSubscription) {
       this.searchSubscription.unsubscribe();
     }
 
     this.isLoading = true;
-    // Force update to show spinner immediately
     this.cd.detectChanges();
 
-    // Prepare Params
-    let isRentedParam: boolean | undefined;
-    if (this.availabilityFilter === 'available') {
-      isRentedParam = false;
-    } else {
-      isRentedParam = undefined;
+    let isRentedParam = this.availabilityFilter === 'available' ? false : undefined;
+
+    // SMART GPS LOGIC: 
+    // If user hasn't actively searched for a city, try to use their GPS location 
+    // from the Home page so their raw browsing experience is ordered by distance!
+    if (!this.filters.city && !this.filters.lat) {
+      const storedLocation = localStorage.getItem('user_geo_location');
+      if (storedLocation) {
+        const parsed = JSON.parse(storedLocation);
+        this.filters.lat = parsed.lat;
+        this.filters.lng = parsed.lng;
+      }
     }
 
-    let apiObservable;
-
-    if (this.selectedLocation) {
-      apiObservable = this.propertyService.searchListingsWithFilters(
-        this.selectedLocation.state,
-        this.selectedLocation.city,
+    this.searchSubscription = this.propertyService.searchListingsWithFilters(
         this.currentPage,
         this.pageSize,
         this.filters,
         isRentedParam
-      );
-    } else {
-      apiObservable = this.propertyService.getAllListingsWithFilters(
-        this.currentPage,
-        this.pageSize,
-        this.filters,
-        isRentedParam
-      );
-    }
-
-    // 5. Subscribe with 'finalize' to guarantee loader stop
-    this.searchSubscription = apiObservable.pipe(
+      ).pipe(
       finalize(() => {
-        // This block runs when request finishes (Success OR Error)
         this.isLoading = false;
         this.cd.detectChanges(); 
       })
     ).subscribe({
       next: (response: any) => {
-        // Safe check for null response or null listings
         if (!response) {
             this.listings = [];
             this.totalItems = 0;
             return;
         }
-
         this.listings = response.listings || [];
         this.totalItems = response.totalItems || 0;
         this.totalPages = response.totalPages || 0;
@@ -198,7 +202,6 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
       },
       error: (err: any) => {
         console.error('API Error:', err);
-        // Ensure data is cleared on error so user sees "No properties" or empty state
         this.listings = []; 
         this.totalItems = 0;
       }
@@ -210,14 +213,13 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
     this.loadListings();
   }
 
-  resetFilters(): void {
+ resetFilters(): void {
     this.filters = { minPrice: 0, maxPrice: 50000, propertyType: 'Any', bedrooms: 'Any' };
     this.searchControl.setValue('');
     this.selectedLocation = null;
     this.availabilityFilter = 'available';
     this.applyFilters();
   }
-
   changePage(page: number): void {
     if (page >= 0 && page < this.totalPages) {
       this.currentPage = page;

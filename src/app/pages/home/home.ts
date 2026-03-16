@@ -121,26 +121,40 @@ isLoading: boolean = true;
     this.fetchDataUsingLocation(coords);
   }
 
+// Replace your existing fetch methods in home.ts with these:
+
   fetchDataUsingLocation(coords: any) {
     this.isLoading = true;
-    this.propertyService.searchListings(coords.state, coords.city, 0, 3).subscribe((response: any) => {
-      console.log('Listings with location:', response);
-      if (response.listings.length === 0) {
-        this.fetchDataWithoutLocation();
-      }else{
-      this.isLoading = false;
-      this.cd.detectChanges();
+    
+    // Pass the user's exact GPS coordinates to get the NEAREST 3 properties
+    const locationFilter: any = {
+      lat: coords.lat,
+      lng: coords.lng
+    };
+
+    // Page 0, Size 3
+    this.propertyService.searchListingsWithFilters(0, 3, locationFilter).subscribe((response: any) => {
+      if (response.listings && response.listings.length > 0) {
+        this.listings = mapBackendListingsToUi(response.listings);
+        this.isLoading = false;
+        this.cd.detectChanges();
+      } else {
+        // If zero properties exist nearby, gracefully fallback to latest
+        this.fetchDataWithoutLocation(); 
       }
     });
   }
+
   fetchDataWithoutLocation() {
-    this.propertyService.getAllListings(0, 3).subscribe(response => {
-      console.log('Listings without location:', response);
-      const mapped = mapBackendListingsToUi(response.listings);
-      this.listings = [...this.listings, ...mapped];
+    this.isLoading = true;
+
+    // Passing an empty filter object triggers the backend to return the LATEST 3 properties
+    this.propertyService.searchListingsWithFilters(0, 3, {}).subscribe((response: any) => {
+      if (response.listings) {
+        this.listings = mapBackendListingsToUi(response.listings);
+      }
       this.isLoading = false;
       this.cd.detectChanges();
-      console.log('Mapped Listings:', this.listings);
     });
   }
 

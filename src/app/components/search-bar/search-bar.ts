@@ -5,8 +5,9 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { City, State } from 'country-state-city';
 import { MatAutocomplete, MatAutocompleteModule, MatOption } from "@angular/material/autocomplete";
 import { MatIcon } from "@angular/material/icon";
-import { MatSelectModule } from '@angular/material/select'; // <-- ADD THIS
+import { MatSelectModule } from '@angular/material/select'; 
 import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-search-bar',
   standalone: true,
@@ -15,8 +16,10 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrls: ['./search-bar.css']
 })
 export class SearchBarComponent {
-  query = '';
-searchControl = new FormControl('');
+  searchControl = new FormControl('');
+  propertyTypeControl = new FormControl('Any'); // Default to Any
+  budgetControl = new FormControl(50000);       // Default to Max (50k)
+
   allCities: any[] = [];
   filteredCities: any[] = [];
 
@@ -26,7 +29,6 @@ searchControl = new FormControl('');
     this.allCities = City.getCitiesOfCountry('IN') || [];
 
     this.searchControl.valueChanges.subscribe(val => {
-      // Ensure we only filter if val is a string (not when an object is selected)
       if (typeof val === 'string') {
         const filterValue = val.toLowerCase();
         this.filteredCities = this.allCities
@@ -44,48 +46,54 @@ searchControl = new FormControl('');
     return city || '';
   }
 
-  // --- 1. HANDLE DROPDOWN SELECTION ---
-  onCitySelected(event: any) {
-    const cityData = event.option.value;
-    // this.navigateToExplore(cityData);
-  }
+  onCitySelected(event: any) {}
 
-  // --- 2. HANDLE SEARCH BUTTON CLICK ---
   search(event?: Event) {
-    if (event) event.preventDefault(); // Prevent form refresh
+    if (event) event.preventDefault();
 
     const val = this.searchControl.value;
 
-    // Case A: User selected a city from dropdown (Value is Object)
+    // Case A: User selected a city from dropdown
     if (val && typeof val === 'object') {
        this.navigateToExplore(val);
        return;
     }
 
-    // Case B: User typed text (Value is String) -> Find best match
+    // Case B: User typed text
     if (typeof val === 'string' && val.trim()) {
-      
-      // 1. Try to find exact match in filtered list
       const match = this.filteredCities.find(c => c.name.toLowerCase() === val.toLowerCase());
-      
       if (match) {
         this.navigateToExplore(match);
-      } 
-      // 2. If no exact match, grab the first suggestion (Auto-select)
-      else if (this.filteredCities.length > 0) {
+      } else if (this.filteredCities.length > 0) {
         this.navigateToExplore(this.filteredCities[0]);
+      } else {
+        this.navigateWithJustFilters(); // No valid city, just pass filters
       }
+    } else {
+       this.navigateWithJustFilters(); // Empty search bar, just pass filters
     }
   }
 
-  // --- Helper to Navigate ---
+  private navigateWithJustFilters() {
+     this.router.navigate(['/search-listing'], { 
+      queryParams: { 
+        propertyType: this.propertyTypeControl.value,
+        maxPrice: this.budgetControl.value
+      } 
+    });
+  }
+
   private navigateToExplore(cityData: any) {
     const state = State.getStateByCodeAndCountry(cityData.stateCode, 'IN');
     
     this.router.navigate(['/search-listing'], { 
       queryParams: { 
         city: cityData.name, 
-        state: state?.name 
+        state: state?.name,
+        lat: cityData.latitude,   // EXTRACTION: Latitude
+        lng: cityData.longitude,  // EXTRACTION: Longitude
+        propertyType: this.propertyTypeControl.value,
+        maxPrice: this.budgetControl.value
       } 
     });
   }

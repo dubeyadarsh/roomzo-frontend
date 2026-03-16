@@ -2,14 +2,13 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router, RouterModule, NavigationEnd } from '@angular/router'; 
 import { MatIconModule } from '@angular/material/icon';
-import { SearchBarComponent } from '../search-bar/search-bar';
 import { AuthService } from '../../services/auth.service';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatIconModule, SearchBarComponent],
+  imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
