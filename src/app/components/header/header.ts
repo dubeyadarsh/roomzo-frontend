@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, Router, RouterModule } from '@angular/router'; // Ensure RouterModule is imported for routerLinkActive
+import { RouterLink, Router, RouterModule, NavigationEnd } from '@angular/router'; 
 import { MatIconModule } from '@angular/material/icon';
 import { SearchBarComponent } from '../search-bar/search-bar';
 import { AuthService } from '../../services/auth.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -13,65 +14,67 @@ import { AuthService } from '../../services/auth.service';
   styleUrls: ['./header.css']
 })
 export class HeaderComponent implements OnInit {
-  
   isLoggedIn = false;
-  isMenuOpen = false;
+  isMenuOpen = false; // Mobile bottom sheet state
+  isDropdownOpen = false; // Desktop dropdown state
   userMobile = '';
+  isScrolled = false;
+  isHomePage = true;
 
-  constructor(private router: Router, private authService: AuthService) {}
-
-  private checkAndClearExpiredStorage() {
-    const loginTime = localStorage.getItem('loginTimestamp');
-    if (loginTime) {
-      const TEN_DAYS = 10 * 24 * 60 * 60 * 1000;
-      const timeElapsed = Date.now() - parseInt(loginTime, 10);
-      if (timeElapsed >= TEN_DAYS) {
-        localStorage.removeItem('ownerVerifiedwWIthOtp');
-        localStorage.removeItem('loginTimestamp');
-        localStorage.removeItem('ownerEmail'); 
-        localStorage.removeItem('ownerUser'); 
-      }
-    }
-
-    const userLoginTime = localStorage.getItem('userloginTimestamp');
-    if (userLoginTime) {
-      const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
-      const timeElapsed = Date.now() - parseInt(userLoginTime, 10); 
-      if (timeElapsed >= ONE_DAY) {
-        localStorage.removeItem('userVerifiedwWIthOtp');
-        localStorage.removeItem('userloginTimestamp');
-        localStorage.removeItem('userEmail');
-      }
-    }
+  constructor(private router: Router, private authService: AuthService) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      this.isHomePage = event.urlAfterRedirects === '/' || event.urlAfterRedirects.startsWith('/#');
+    });
   }
 
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 50;
+  }
+
+  // Closes dropdowns when clicking anywhere outside
+ @HostListener('document:click', ['$event'])
+onDocumentClick(event: MouseEvent) { // Add the event parameter here
+  this.isDropdownOpen = false;
+}
+
   ngOnInit() {
-    this.checkAndClearExpiredStorage();
-    
     this.authService.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
       if (status) {
-        this.userMobile = localStorage.getItem('ownerEmail') || '';
+        // Fallback to 'User' if email not found
+        this.userMobile = localStorage.getItem('ownerEmail') || localStorage.getItem('userEmail') || 'User';
       } else {
         this.userMobile = '';
-        this.isMenuOpen = false; // Close menu if logged out
+        this.isMenuOpen = false;
+        this.isDropdownOpen = false;
       }
     });
   }
 
-  // Opens/Closes the Profile Dropdown
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
+    if (this.isMenuOpen) this.isDropdownOpen = false;
   }
 
-  // Closes the menu explicitly (used when clicking a link inside it)
+  toggleDropdown(event: Event) {
+    event.stopPropagation(); // Stop propagation to document click listener
+    this.isDropdownOpen = !this.isDropdownOpen;
+    if (this.isDropdownOpen) this.isMenuOpen = false;
+  }
+
   closeMenu() {
     this.isMenuOpen = false;
   }
 
   logout() {
-    this.authService.logout();
-    this.isMenuOpen = false;
-    this.router.navigate(['/']);
-  }
+  this.authService.logout(); // Ensure your service broadcasts the new status
+  this.isLoggedIn = false;   // Explicitly reset local state
+  this.userMobile = '';     // Clear user info
+  this.isMenuOpen = false;   // Close the mobile menu
+  this.isDropdownOpen = false; // Close desktop dropdown
+  this.router.navigate(['/']);
+}
 }

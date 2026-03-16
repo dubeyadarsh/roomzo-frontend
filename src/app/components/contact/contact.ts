@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { Router } from '@angular/router'; // <--- 1. Import this
+import { MatSelectModule } from '@angular/material/select'; // <-- Add this import
+import { Router } from '@angular/router'; 
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service';
+
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatIconModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule, MatButtonModule, MatSelectModule], // <-- Add MatSelectModule here
   templateUrl: './contact.html',
   styleUrls: ['./contact.css']
 })
@@ -30,16 +32,10 @@ export class ContactComponent {
       title: 'Email', 
       content: 'support@roomzo.in', 
       sub: '' 
-    },
-    // { 
-    //   icon: 'location_on', 
-    //   title: 'Office', 
-    //   content: '123 Market Street, Suite 400', 
-    //   sub: 'Cityville, ST 90210' 
-    // }
+    }
   ];
 
-  constructor(private fb: FormBuilder,private router: Router, private toastr: ToastrService, private authService: AuthService) {
+  constructor(private fb: FormBuilder, private router: Router, private toastr: ToastrService, private authService: AuthService) {
     this.contactForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -49,11 +45,9 @@ export class ContactComponent {
   }
 
  onSubmit() {
-    // 1. Check if form is valid
     if (this.contactForm.valid) {
       this.isSubmitting = true;
 
-      // 2. Prepare Data
       const payload = {
         name: this.contactForm.value.fullName,
         email: this.contactForm.value.email,
@@ -61,35 +55,33 @@ export class ContactComponent {
         message: this.contactForm.value.message
       };
 
-      // 3. Call Service
       this.authService.sendContactForm(payload).subscribe({
         next: (res: any) => {
           this.isSubmitting = false;
-          
           if (res.status === 1) {
-            // SUCCESS TOASTER
             this.toastr.success('Message sent! We will contact you soon.', 'Success');
-            this.contactForm.reset(); // Clear the form
+            this.contactForm.reset(); 
+            // Reset the mat-select visually
+            Object.keys(this.contactForm.controls).forEach(key => {
+              this.contactForm.get(key)?.setErrors(null);
+            });
           } else {
-            // BACKEND LOGIC ERROR TOASTER
             this.toastr.error(res.message || 'Something went wrong.', 'Error');
           }
         },
         error: (err) => {
           this.isSubmitting = false;
           console.error('Contact Form Error:', err);
-          
-          // SERVER DOWN / NETWORK ERROR TOASTER
           this.toastr.error('Failed to send message. Please try again later.', 'Server Error');
         }
       });
       
     } else {
-      // INVALID FORM TOASTER
-      this.contactForm.markAllAsTouched(); // Highlight red fields
+      this.contactForm.markAllAsTouched(); 
       this.toastr.warning('Please fill in all required fields.', 'Invalid Form');
     }
   }
+
   goToFaq() {
     this.router.navigate(['/faq']);
   }

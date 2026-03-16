@@ -38,7 +38,7 @@ export class HomeComponent {
     this.checkAndGetLocation();
   }
   listings: Listing[] = [];
-
+isLoading: boolean = true; 
   checkAndGetLocation() {
     // 1. Check LocalStorage
     const storedData = localStorage.getItem('user_geo_location');
@@ -122,12 +122,14 @@ export class HomeComponent {
   }
 
   fetchDataUsingLocation(coords: any) {
-    console.log(`Calling Backend API with Lat: ${coords.state}, Lng: ${coords.lng}`);
-    // this.http.get(...).subscribe(...)
+    this.isLoading = true;
     this.propertyService.searchListings(coords.state, coords.city, 0, 3).subscribe((response: any) => {
       console.log('Listings with location:', response);
       if (response.listings.length === 0) {
         this.fetchDataWithoutLocation();
+      }else{
+      this.isLoading = false;
+      this.cd.detectChanges();
       }
     });
   }
@@ -136,6 +138,7 @@ export class HomeComponent {
       console.log('Listings without location:', response);
       const mapped = mapBackendListingsToUi(response.listings);
       this.listings = [...this.listings, ...mapped];
+      this.isLoading = false;
       this.cd.detectChanges();
       console.log('Mapped Listings:', this.listings);
     });

@@ -27,7 +27,7 @@
 }
 
 .btn-primary:hover {
-  background-color: #152d6b; /* Slightly darker shade of primary */
+  background-color: var(--rz-primary-hover); /* Slightly darker shade of primary */
 }
 
 /* Make inputs look exactly like the screenshot */
@@ -59,4 +59,34 @@
   letter-spacing: 0.5rem;
   font-size: 1.5rem;
   font-weight: bold;
+}
+
+.pt-header {
+  padding-top: 100px !important; /* Adjust based on your header height */
+}
+
+/* Spinner styling inside buttons */
+.spinner-border-sm {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-width: 0.2em;
+}
+
+/* Ensure buttons don't shrink when text is replaced by spinner */
+.btn-lg {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Smooth transition for max-width changes */
+.auth-card {
+  transition: max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 600px) {
+  .pt-header {
+    padding-top: 80px !important;
+  }
 }

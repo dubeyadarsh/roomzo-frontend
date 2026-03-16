@@ -1,5 +1,4 @@
 :host {
-  --primary: #1e3a8a;       /* Deep Blue */
   --text-main: #111827;
   --text-muted: #6b7280;
   --bg-light: #f9fafb;
@@ -15,7 +14,7 @@
 .center { text-align: center; }
 .eyebrow { 
   display: block; font-size: 12px; font-weight: 700; 
-  color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  color: var(--rz-primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
 }
 .subtext { color: var(--text-muted); max-width: 700px; margin: 0 auto; line-height: 1.6; }
 h2 { font-size: 32px; font-weight: 700; color: var(--text-main); margin: 0 0 16px 0; }
@@ -68,14 +67,14 @@ p { margin-bottom: 24px; color: var(--text-muted); line-height: 1.6; }
 .value-card:hover { transform: translateY(-5px); border-color: var(--border); background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 
 .icon-box { 
-  width: 48px; height: 48px; background: #dbeafe; color: var(--primary); 
+  width: 48px; height: 48px; background: #dbeafe; color: var(--rz-primary); 
   border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
 }
 .value-card h3 { font-size: 20px; font-weight: 700; margin: 0 0 12px 0; }
 .value-card p { font-size: 14px; margin: 0; }
 
 /* 3. STATS SECTION */
-.stats-section { background: var(--primary); color: white; padding: 60px 0; }
+.stats-section { background: var(--rz-primary); color: white; padding: 60px 0; }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 24px; }
 .stat-val { font-size: 42px; font-weight: 800; margin-bottom: 4px; }
 .stat-label { font-size: 14px; opacity: 0.8; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -91,7 +90,7 @@ p { margin-bottom: 24px; color: var(--text-muted); line-height: 1.6; }
   border-radius: 20px; font-size: 12px; 
 }
 .link-btn { 
-  background: none; border: none; color: var(--primary); font-weight: 600; 
+  background: none; border: none; color: var(--rz-primary); font-weight: 600; 
   cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 0; font-size: 16px;
 }
 
@@ -112,10 +111,10 @@ p { margin-bottom: 24px; color: var(--text-muted); line-height: 1.6; }
   border-radius: 50%; display: flex; align-items: center; justify-content: center; 
   color: var(--text-muted); cursor: pointer; transition: 0.2s;
 }
-.email-btn:hover { background: var(--primary); color: white; }
+.email-btn:hover { background: var(--rz-primary); color: white; }
 
 /* 6. CTA SECTION */
-.cta-section { background: var(--primary); color: white; padding: 80px 0; }
+.cta-section { background: var(--rz-primary); color: white; padding: 80px 0; }
 .cta-section h2 { color: white; }
 .cta-section p { color: #dbeafe; margin-bottom: 32px; }
 .cta-actions { display: flex; gap: 16px; justify-content: center; }

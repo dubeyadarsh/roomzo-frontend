@@ -12,7 +12,7 @@
 
 /* --- Header --- */
 .faq-header {
-  background-color: #1e3a8a; /* Your Brand Primary Blue */
+  background-color: var(--rz-primary); /* Your Brand Primary Blue */
   color: white;
   text-align: center;
   padding: 60px 20px;
@@ -67,12 +67,12 @@
 }
 
 .tab-btn:hover {
-  color: #1e3a8a;
+  color: var(--rz-primary);
   background: #f3f4f6;
 }
 
 .tab-btn.active {
-  background-color: #1e3a8a;
+  background-color: var(--rz-primary);
   color: white;
   box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
 }

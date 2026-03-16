@@ -2,11 +2,13 @@ import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { gsap } from 'gsap';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { MatIcon } from "@angular/material/icon";
+import { SearchBarComponent } from "../search-bar/search-bar";
 
 @Component({
   selector: 'app-hero',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIcon, SearchBarComponent],
   templateUrl: './hero.html',
   styleUrls: ['./hero.css']
 })

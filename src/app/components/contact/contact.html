@@ -1,10 +1,9 @@
 <div class="page-wrapper">
-  
-  <div  class="container">
+  <div class="container">
     
     <header class="page-header">
-      <h1>Contact Our Real Estate Experts</h1>
-      <p>Have questions about a listing or want to sell your property? Fill out the form below or visit us at our main office.</p>
+      <h1>Contact Our Experts</h1>
+      <p>Have questions about a listing or want to list your property? Fill out the form below or reach out directly.</p>
     </header>
 
     <div class="contact-grid">
@@ -30,21 +29,17 @@
 
           <div class="form-group">
             <label>Subject</label>
-            <div class="select-wrapper">
-              <select formControlName="subject">
-                <option value="" disabled selected>Select an inquiry type</option>
-                <!-- <option value="buy">Buying a Property</option>
-                <option value="sell">Selling a Property</option> -->
-                <option value="rent">Renting</option>
-                <option value="general">General Question</option>
-              </select>
-              <mat-icon class="select-arrow">expand_more</mat-icon>
-            </div>
+            <mat-select formControlName="subject" placeholder="Select an inquiry type" class="custom-contact-select" panelClass="custom-select-panel">
+              <mat-option value="rent">Renting</mat-option>
+              <mat-option value="list">Listing a Property</mat-option>
+              <mat-option value="general">General Question</mat-option>
+            </mat-select>
+            <div class="error" *ngIf="contactForm.get('subject')?.touched && contactForm.get('subject')?.invalid">Please select a subject</div>
           </div>
 
           <div class="form-group">
             <label>Message</label>
-            <textarea formControlName="message" rows="6" placeholder="Tell us how we can help you..."></textarea>
+            <textarea formControlName="message" rows="5" placeholder="Tell us how we can help you..."></textarea>
             <div class="error" *ngIf="contactForm.get('message')?.touched && contactForm.get('message')?.invalid">Message is required</div>
           </div>
 
@@ -58,7 +53,7 @@
         </form>
       </div>
 
-      <div  class="info-column">
+      <div class="info-column">
         
         <div class="info-card">
           <h3>Contact Information</h3>
@@ -70,7 +65,6 @@
             <div class="info-content">
               <span class="label">{{ item.title }}</span>
               <div class="value">{{ item.content }}</div>
-              <div class="sub-value" *ngIf="item.sub">{{ item.sub }}</div>
             </div>
           </div>
         </div>
@@ -98,6 +92,5 @@
       <button class="btn-white" (click)="goToFaq()">View FAQ</button>
     </div>
 
-   
   </div>
 </div>

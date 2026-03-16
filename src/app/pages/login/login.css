@@ -36,7 +36,7 @@
   font-size: 32px;
   width: 32px;
   height: 32px;
-  color: #1e3a8a; /* Primary Blue */
+  color: var(--rz-primary); /* Primary Blue */
 }
 
 h2 {
@@ -76,7 +76,7 @@ label {
 }
 
 .input-group:focus-within, .otp-input:focus {
-  border-color: #1e3a8a;
+  border-color: var(--rz-primary);
   box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
@@ -106,7 +106,7 @@ input {
 }
 
 .btn-primary {
-  background: #1e3a8a;
+  background: var(--rz-primary);
   color: white;
   border: none;
   padding: 14px;
@@ -119,12 +119,12 @@ input {
 }
 
 .btn-primary:disabled {
-  background: #93c5fd;
+  background: var(--rz-primary-hover);
   cursor: not-allowed;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #1e40af;
+  background: var(--rz-primary-hover);
 }
 
 .btn-link {
@@ -175,7 +175,7 @@ input {
 
 /* Optional: Focus effect for the whole group */
 .input-group:focus-within {
-  border-color: #1e3a8a;
+  border-color: var(--rz-primary);
   box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 /* Animation */

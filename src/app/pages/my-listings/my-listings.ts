@@ -6,11 +6,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { PropertyService } from '../../services/property.service';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
-
+import { MatSelectModule } from '@angular/material/select'; // <-- 1. Import MatSelect
 @Component({
   selector: 'app-my-listings',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink],
+  imports: [CommonModule, MatIconModule, MatButtonModule, RouterLink, MatSelectModule],
   templateUrl: './my-listings.html',
   styleUrls: ['./my-listings.css']
 })

@@ -4,11 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { City, State } from 'country-state-city';
 import { MatAutocomplete, MatAutocompleteModule, MatOption } from "@angular/material/autocomplete";
-
+import { MatIcon } from "@angular/material/icon";
+import { MatSelectModule } from '@angular/material/select'; // <-- ADD THIS
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatAutocomplete, MatOption,ReactiveFormsModule, MatAutocompleteModule],
+  imports: [CommonModule, FormsModule, MatAutocomplete, MatOption, ReactiveFormsModule, MatAutocompleteModule, MatIcon, MatSelectModule, MatIconModule],
   templateUrl: './search-bar.html',
   styleUrls: ['./search-bar.css']
 })

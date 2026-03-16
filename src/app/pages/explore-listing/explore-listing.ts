@@ -241,4 +241,10 @@ export class ExploreListingsComponent implements OnInit, OnDestroy {
     const state = State.getStateByCodeAndCountry(stateCode, 'IN');
     return state ? state.name : stateCode;
   }
+  isMobileFiltersOpen = false; 
+  
+  toggleMobileFilters(): void {
+    this.isMobileFiltersOpen = !this.isMobileFiltersOpen;
+  }
+
 }

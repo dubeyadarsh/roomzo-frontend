@@ -75,6 +75,7 @@ export class ListPropertyComponent implements OnInit,AfterViewInit {
   ) {}
 private map: L.Map | undefined;
 private marker: L.Marker | undefined;
+// --- REPLACE YOUR ngOnInit() WITH THIS ---
   ngOnInit(): void {
     this.listingForm = this.fb.group({
       details: this.fb.group({
@@ -88,8 +89,9 @@ private marker: L.Marker | undefined;
           landmark: ['', Validators.required],
           state: ['', Validators.required],
           zip: ['', Validators.required],
-          latitude: [null],  // NEW
-          longitude: [null]
+          // STRICT VALIDATION: Map Location
+          latitude: [null, Validators.required],  
+          longitude: [null, Validators.required]
         })
       }),
       amenities: this.fb.group({
@@ -97,14 +99,14 @@ private marker: L.Marker | undefined;
         parking: [false], gym: [false], balcony: [false], pets: [false],
         smokeAlarm: [false], coAlarm: [false]
       }),
-      // New Guidebook Section
       guidebook: this.fb.group({
-        rules: this.fb.array([]), // Stores selected rule values
-        customRules: [''], // Text area for extra rules
-        nearby: this.fb.array([]) // Dynamic list of places
+        rules: this.fb.array([]),
+        customRules: [''],
+        nearby: this.fb.array([]) 
       }),
       final: this.fb.group({
-        contactNo: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+        // STRICT VALIDATION: Exactly 10 digits
+        contactNo: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]], 
         name: ['', [Validators.required, Validators.maxLength(200)]],
         description: ['', [Validators.required, Validators.maxLength(1000)]],
         rentAmount: ['', Validators.required],
@@ -112,7 +114,7 @@ private marker: L.Marker | undefined;
       })
     });
 
-    // Initialize with one empty nearby slot
+    // Initialize with one empty nearby slot (Enforces at least 1 nearby place)
     this.addNearbyPlace();
 
     this.states = State.getStatesOfCountry('IN');
@@ -120,15 +122,27 @@ private marker: L.Marker | undefined;
       const state = this.states.find(s => s.name === stateName);
       this.selectedStateIso = state ? state.isoCode : null;
       this.cities = this.selectedStateIso ? City.getCitiesOfState('IN', this.selectedStateIso) : [];
-      this.detailsGroup.get('address.city')?.reset();
+      // Do not reset city if it's already populated by map auto-detect
+      if (!this.detailsGroup.get('address.city')?.value) {
+        this.detailsGroup.get('address.city')?.reset();
+      }
     });
-  this.fixLeafletIcons();
+    this.fixLeafletIcons();
   }
 ngAfterViewInit(): void {
-    // This guarantees the HTML div is physically on the screen before Leaflet tries to draw
-    setTimeout(() => {
-      if (this.currentStep === 1) {
-        this.initMap();
+    if (this.currentStep === 1) {
+      this.loadMapSafely();
+    }
+  }
+
+  // NEW: Smart loader that waits for the DOM to be ready
+  loadMapSafely(): void {
+    // Keep checking every 100ms until Angular actually renders the map div
+    const checkExist = setInterval(() => {
+      const mapElement = document.getElementById('propertyMap');
+      if (mapElement) {
+        clearInterval(checkExist); // Stop checking
+        this.initMap();            // Draw the map
       }
     }, 100);
   }
@@ -163,11 +177,12 @@ ngAfterViewInit(): void {
   }
 
   // --- Nearby Places Logic ---
-  addNearbyPlace(): void {
+ addNearbyPlace(): void {
     const placeGroup = this.fb.group({
+      // STRICT VALIDATION: Name and Distance required
       name: ['', Validators.required],
-      distance: ['', Validators.required], // e.g., "5 mins walk"
-      type: ['attraction'] // optional: could be 'transport', 'dining', etc.
+      distance: ['', Validators.required], 
+      type: ['place'] 
     });
     this.nearbyPlaces.push(placeGroup);
   }
@@ -242,14 +257,14 @@ ngAfterViewInit(): void {
   }
 
   // --- Navigation Logic ---
-  nextStep(): void {
+ nextStep(): void {
     let groupName = '';
     if (this.currentStep === 1) groupName = 'details';
     else if (this.currentStep === 2) groupName = 'amenities';
     else if (this.currentStep === 3) groupName = 'guidebook';
     else groupName = 'final';
 
-    const group = this.listingForm.get(groupName);
+    const group = this.listingForm.get(groupName) as FormGroup;
 
     if (group && group.valid) {
       if (this.currentStep < this.totalSteps) {
@@ -257,8 +272,14 @@ ngAfterViewInit(): void {
         window.scrollTo(0, 0);
       }
     } else {
+      // Mark everything as touched so our red CSS borders show up!
       group?.markAllAsTouched();
-      this.toastr.warning('Please complete all required fields.', 'Step Incomplete');
+      
+      // Log the exact broken fields to your browser console (F12)
+      console.warn(`Validation failed on Step ${this.currentStep}. Missing fields:`);
+      this.findInvalidControls(group);
+
+      this.toastr.warning('Please complete the highlighted fields.', 'Step Incomplete');
     }
   }
 
@@ -266,6 +287,11 @@ ngAfterViewInit(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
       window.scrollTo(0, 0);
+      
+      // CRITICAL: Re-draw the map when returning to Step 1
+      if (this.currentStep === 1) {
+        this.loadMapSafely();
+      }
     }
   }
 // Add this variable inside your class
@@ -273,50 +299,43 @@ isSubmitting = false;
 
 // Updated onSubmit Method
 onSubmit(): void {
-  if (this.listingForm.valid) {
-    
-    // Prevent double-clicking while request is in progress
-    if (this.isSubmitting) return;
+    if (this.listingForm.valid) {
+      if (this.isSubmitting) return;
 
-    const rawData = this.listingForm.value;
-    const files: File[] = rawData.final.images || [];
+      const rawData = this.listingForm.value;
+      const files: File[] = rawData.final.images || [];
 
-    if (files.length < 2) {
-      this.toastr.error('Please upload at least two images.', 'Error');
-      return;
-    }
-
-    // 1. DISABLE BUTTON (Start Loading)
-    this.isSubmitting = true;
-
-    this.propertyService.saveListing(rawData).subscribe({
-      next: (response) => {
-        this.toastr.success('Listing uploaded successfully!', 'Success');
-        
-        // Reset everything
-        this.listingForm.reset();
-        this.imagePreviews = [];
-        this.selectedFiles = [];
-        this.currentStep = 1;
-        window.scrollTo(0, 0);
-
-        // 2. ENABLE BUTTON (Success)
-        this.isSubmitting = false;
-      },
-      error: (error) => {
-        console.error('Error:', error);
-        this.toastr.error('Failed to save listing.', 'Error');
-        
-        // 2. ENABLE BUTTON (Error)
-        this.isSubmitting = false; 
+      if (files.length < 2) {
+        this.toastr.error('Please upload at least two images.', 'Error');
+        return;
       }
-    });
 
-  } else {
-    this.listingForm.markAllAsTouched();
-    this.toastr.error('Please fill in all required fields.');
+      this.isSubmitting = true;
+
+      this.propertyService.saveListing(rawData).subscribe({
+        next: (response) => {
+          this.toastr.success('Listing uploaded successfully!', 'Success');
+          this.listingForm.reset();
+          this.imagePreviews = [];
+          this.selectedFiles = [];
+          this.currentStep = 1;
+          window.scrollTo(0, 0);
+          this.isSubmitting = false;
+        },
+        error: (error) => {
+          console.error('Error:', error);
+          this.toastr.error('Failed to save listing.', 'Error');
+          this.isSubmitting = false; 
+        }
+      });
+    } else {
+      // If final submission fails, mark all and log
+      this.listingForm.markAllAsTouched();
+      console.warn('Final Form Submission Failed. Missing fields:');
+      this.findInvalidControls(this.listingForm);
+      this.toastr.error('Please fill in all highlighted required fields.');
+    }
   }
-}
 private async watermarkImage(file: File): Promise<File> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -406,6 +425,7 @@ private initMap(): void {
   // Make sure to destroy the old map instance if it exists (useful for Step navigation)
   if (this.map) {
     this.map.remove();
+    this.map = undefined;
   }
 
   this.map = L.map('propertyMap').setView([defaultLat, defaultLng], 5);
@@ -489,4 +509,14 @@ private setMarkerAndAddress(lat: number, lng: number): void {
     }
   });
 }
+private findInvalidControls(formGroup: FormGroup | FormArray) {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        this.findInvalidControls(control);
+      } else if (control?.invalid) {
+        console.error(`🔴 Invalid field found: '${key}'`, control.errors);
+      }
+    });
+  }
 }

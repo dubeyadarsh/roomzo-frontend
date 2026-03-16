@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class OwnerAuthComponent implements OnInit {
   // UI State Controls
+  isSubmitting = false;
   isLoginMode = true;
   showOtpStep = false;
   isForgotPasswordMode = false;
@@ -130,20 +131,25 @@ onLogin() {
       this.loginForm.markAllAsTouched();
       return;
     }
-
+this.isSubmitting = true; // Start loading
     this.authService.loginOwner(this.loginForm.value).subscribe({
       next: (res) => {
         if (res.status === 1) {
+          this.isSubmitting = false; // Stop loading
           this.toastr.success('Welcome back!', 'Login Successful');
           this.authService.saveSession(res.data.user); // Save session with email and user data
           this.router.navigate(['/list']);
         } else {
           this.toastr.error(res.message, 'Login Failed');
+          this.isSubmitting = false; // Stop loading
         }
+        this.cdr.detectChanges();
       },
       error: (err) => {
+        this.isSubmitting = false; // Stop loading
         console.error('Login error', err);
         this.toastr.error('An error occurred during login. Please try again.', 'Error');
+        this.cdr.detectChanges();
       }
     });
   }
